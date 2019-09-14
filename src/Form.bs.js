@@ -10,7 +10,10 @@ function str(prim) {
 
 function Form(Props) {
   var match = React.useReducer((function (state, action) {
-          if (action.tag) {
+          if (typeof action === "number") {
+            console.log("Form submitted with values: " + (String(state) + ""));
+            return state;
+          } else if (action.tag) {
             return /* record */[
                     /* email */state[/* email */0],
                     /* password */action[0]
@@ -34,7 +37,12 @@ function Form(Props) {
                       className: "column is-4 is-offset-4"
                     }, React.createElement("div", {
                           className: "box"
-                        }, React.createElement("form", undefined, React.createElement("div", {
+                        }, React.createElement("form", {
+                              onSubmit: (function (evt) {
+                                  evt.preventDefault();
+                                  return Curry._1(dispatch, /* SubmitForm */0);
+                                })
+                            }, React.createElement("div", {
                                   className: "field"
                                 }, React.createElement("label", {
                                       className: "label"

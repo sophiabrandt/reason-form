@@ -7,7 +7,8 @@ type state = {
 
 type action =
   | SetEmail(string)
-  | SetPassword(string);
+  | SetPassword(string)
+  | SubmitForm;
 
 [@react.component]
 let make = () => {
@@ -19,6 +20,9 @@ let make = () => {
         switch (action) {
         | SetEmail(email) => {...state, email}
         | SetPassword(password) => {...state, password}
+        | SubmitForm =>
+          Js.log({j|Form submitted with values: $state|j});
+          state;
         },
       {email: "", password: ""},
     );
@@ -27,7 +31,13 @@ let make = () => {
     <div className="container">
       <div className="column is-4 is-offset-4">
         <div className="box">
-          <form>
+          <form
+            onSubmit={
+              evt => {
+                ReactEvent.Form.preventDefault(evt);
+                dispatch(SubmitForm);
+              }
+            }>
             <div className="field">
               <label className="label"> {"Email Address" |> str} </label>
               <div className="control">
