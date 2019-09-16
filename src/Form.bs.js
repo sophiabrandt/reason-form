@@ -8,27 +8,33 @@ function str(prim) {
   return prim;
 }
 
+function reducer(state, action) {
+  if (typeof action === "number") {
+    console.log("Form submitted with values: " + (String(state) + ""));
+    return /* record */[
+            /* email */"",
+            /* password */""
+          ];
+  } else if (action.tag) {
+    return /* record */[
+            /* email */state[/* email */0],
+            /* password */action[0]
+          ];
+  } else {
+    return /* record */[
+            /* email */action[0],
+            /* password */state[/* password */1]
+          ];
+  }
+}
+
 function Form(Props) {
-  var match = React.useReducer((function (state, action) {
-          if (typeof action === "number") {
-            console.log("Form submitted with values: " + (String(state) + ""));
-            return state;
-          } else if (action.tag) {
-            return /* record */[
-                    /* email */state[/* email */0],
-                    /* password */action[0]
-                  ];
-          } else {
-            return /* record */[
-                    /* email */action[0],
-                    /* password */state[/* password */1]
-                  ];
-          }
-        }), /* record */[
+  var match = React.useReducer(reducer, /* record */[
         /* email */"",
         /* password */""
       ]);
   var dispatch = match[1];
+  var state = match[0];
   return React.createElement("div", {
               className: "section is-fullheight"
             }, React.createElement("div", {
@@ -53,6 +59,7 @@ function Form(Props) {
                                           name: "email",
                                           required: true,
                                           type: "email",
+                                          value: state[/* email */0],
                                           onChange: (function (evt) {
                                               return Curry._1(dispatch, /* SetEmail */Block.__(0, [evt.target.value]));
                                             })
@@ -67,6 +74,7 @@ function Form(Props) {
                                           name: "password",
                                           required: true,
                                           type: "password",
+                                          value: state[/* password */1],
                                           onChange: (function (evt) {
                                               return Curry._1(dispatch, /* SetPassword */Block.__(1, [evt.target.value]));
                                             })
@@ -80,6 +88,7 @@ var make = Form;
 
 export {
   str ,
+  reducer ,
   make ,
   
 }

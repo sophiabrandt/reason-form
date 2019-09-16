@@ -10,22 +10,22 @@ type action =
   | SetPassword(string)
   | SubmitForm;
 
+let reducer = (state, action) => {
+  switch (action) {
+    | SetEmail(email) => {...state, email}
+    | SetPassword(password) => {...state, password}
+    | SubmitForm => {
+      Js.log({j|Form submitted with values: $state|j});
+      {email: "", password: ""};
+    };
+  }
+};
+
 [@react.component]
 let make = () => {
   let initialState = {email: "", password: ""};
 
-  let (_state, dispatch) =
-    React.useReducer(
-      (state, action) =>
-        switch (action) {
-        | SetEmail(email) => {...state, email}
-        | SetPassword(password) => {...state, password}
-        | SubmitForm =>
-          Js.log({j|Form submitted with values: $state|j});
-          state;
-        },
-        initialState
-    );
+  let (state, dispatch) = React.useReducer(reducer,initialState);
 
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
 
@@ -47,6 +47,7 @@ let make = () => {
                   className="input"
                   type_="email"
                   name="email"
+                  value={state.email}
                   required=true
                   onChange={evt => valueFromEvent(evt)->SetEmail |> dispatch}
                 />
@@ -59,6 +60,7 @@ let make = () => {
                   className="input"
                   type_="password"
                   name="password"
+                  value={state.password}
                   required=true
                   onChange={
                     evt => valueFromEvent(evt)->SetPassword |> dispatch
