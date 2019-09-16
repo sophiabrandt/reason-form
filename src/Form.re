@@ -12,7 +12,7 @@ type action =
 
 [@react.component]
 let make = () => {
-  let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
+  let initialState = {email: "", password: ""};
 
   let (_state, dispatch) =
     React.useReducer(
@@ -24,8 +24,10 @@ let make = () => {
           Js.log({j|Form submitted with values: $state|j});
           state;
         },
-      {email: "", password: ""},
+        initialState
     );
+
+  let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
 
   <div className="section is-fullheight">
     <div className="container">
