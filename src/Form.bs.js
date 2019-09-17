@@ -4,92 +4,73 @@ import * as Block from "bs-platform/lib/es6/block.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 
-function str(prim) {
-  return prim;
-}
+var initialState = /* record */[
+  /* email */"",
+  /* password */"",
+  /* username */""
+];
 
 function reducer(state, action) {
   if (typeof action === "number") {
-    console.log("Form submitted with values: " + (String(state) + ""));
-    return /* record */[
-            /* email */"",
-            /* password */""
-          ];
-  } else if (action.tag) {
-    return /* record */[
-            /* email */state[/* email */0],
-            /* password */action[0]
-          ];
+    return initialState;
   } else {
-    return /* record */[
-            /* email */action[0],
-            /* password */state[/* password */1]
-          ];
+    switch (action.tag | 0) {
+      case 0 : 
+          return /* record */[
+                  /* email */action[0],
+                  /* password */state[/* password */1],
+                  /* username */state[/* username */2]
+                ];
+      case 1 : 
+          return /* record */[
+                  /* email */state[/* email */0],
+                  /* password */action[0],
+                  /* username */state[/* username */2]
+                ];
+      case 2 : 
+          return /* record */[
+                  /* email */state[/* email */0],
+                  /* password */state[/* password */1],
+                  /* username */action[0]
+                ];
+      
+    }
   }
 }
 
-function Form(Props) {
-  var match = React.useReducer(reducer, /* record */[
-        /* email */"",
-        /* password */""
-      ]);
+function useForm(callback) {
+  var match = React.useReducer(reducer, initialState);
   var dispatch = match[1];
-  var state = match[0];
-  return React.createElement("div", {
-              className: "section is-fullheight"
-            }, React.createElement("div", {
-                  className: "container"
-                }, React.createElement("div", {
-                      className: "column is-4 is-offset-4"
-                    }, React.createElement("div", {
-                          className: "box"
-                        }, React.createElement("form", {
-                              onSubmit: (function (evt) {
-                                  evt.preventDefault();
-                                  return Curry._1(dispatch, /* SubmitForm */0);
-                                })
-                            }, React.createElement("div", {
-                                  className: "field"
-                                }, React.createElement("label", {
-                                      className: "label"
-                                    }, "Email Address"), React.createElement("div", {
-                                      className: "control"
-                                    }, React.createElement("input", {
-                                          className: "input",
-                                          name: "email",
-                                          required: true,
-                                          type: "email",
-                                          value: state[/* email */0],
-                                          onChange: (function (evt) {
-                                              return Curry._1(dispatch, /* SetEmail */Block.__(0, [evt.target.value]));
-                                            })
-                                        }))), React.createElement("div", {
-                                  className: "field"
-                                }, React.createElement("label", {
-                                      className: "label"
-                                    }, "Password"), React.createElement("div", {
-                                      className: "control"
-                                    }, React.createElement("input", {
-                                          className: "input",
-                                          name: "password",
-                                          required: true,
-                                          type: "password",
-                                          value: state[/* password */1],
-                                          onChange: (function (evt) {
-                                              return Curry._1(dispatch, /* SetPassword */Block.__(1, [evt.target.value]));
-                                            })
-                                        }))), React.createElement("button", {
-                                  className: "button is-block is-info is-fullwidth",
-                                  type: "submit"
-                                }, "Login"))))));
+  var handleChange = function (evt) {
+    evt.persist();
+    var match = evt.target.name;
+    switch (match) {
+      case "email" : 
+          return Curry._1(dispatch, /* SetEmail */Block.__(0, [evt.target.value]));
+      case "password" : 
+          return Curry._1(dispatch, /* SetPassword */Block.__(1, [evt.target.value]));
+      case "username" : 
+          return Curry._1(dispatch, /* SetUsername */Block.__(2, [evt.target.value]));
+      default:
+        return /* () */0;
+    }
+  };
+  var handleSubmit = function (evt) {
+    evt.preventDefault();
+    Curry._1(callback, /* () */0);
+    return Curry._1(dispatch, /* ResetState */0);
+  };
+  return /* tuple */[
+          match[0],
+          handleChange,
+          handleSubmit
+        ];
 }
 
-var make = Form;
-
 export {
-  str ,
+  initialState ,
   reducer ,
-  make ,
+  useForm ,
   
 }
 /* react Not a pure module */
