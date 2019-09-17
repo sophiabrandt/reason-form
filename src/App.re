@@ -2,8 +2,8 @@
 let make = () => {
   let url = ReasonReactRouter.useUrl();
   switch (url.path) {
-    | ["login"] => <Login />
-    | ["register"] => <Register />
+    | ["login"] => <Form formType="login"/>
+    | ["register"] => <Form formType="register"/>
     | [] => <Main />
     | _ => <NotFoundPage />
     }

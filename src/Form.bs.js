@@ -4,10 +4,14 @@ import * as Block from "bs-platform/lib/es6/block.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 
+function str(prim) {
+  return prim;
+}
+
 var initialState = /* record */[
+  /* username */"",
   /* email */"",
-  /* password */"",
-  /* username */""
+  /* password */""
 ];
 
 function reducer(state, action) {
@@ -17,21 +21,21 @@ function reducer(state, action) {
     switch (action.tag | 0) {
       case 0 : 
           return /* record */[
-                  /* email */action[0],
-                  /* password */state[/* password */1],
-                  /* username */state[/* username */2]
+                  /* username */action[0],
+                  /* email */state[/* email */1],
+                  /* password */state[/* password */2]
                 ];
       case 1 : 
           return /* record */[
-                  /* email */state[/* email */0],
-                  /* password */action[0],
-                  /* username */state[/* username */2]
+                  /* username */state[/* username */0],
+                  /* email */action[0],
+                  /* password */state[/* password */2]
                 ];
       case 2 : 
           return /* record */[
-                  /* email */state[/* email */0],
-                  /* password */state[/* password */1],
-                  /* username */action[0]
+                  /* username */state[/* username */0],
+                  /* email */state[/* email */1],
+                  /* password */action[0]
                 ];
       
     }
@@ -46,11 +50,11 @@ function useForm(callback) {
     var match = evt.target.name;
     switch (match) {
       case "email" : 
-          return Curry._1(dispatch, /* SetEmail */Block.__(0, [evt.target.value]));
+          return Curry._1(dispatch, /* SetEmail */Block.__(1, [evt.target.value]));
       case "password" : 
-          return Curry._1(dispatch, /* SetPassword */Block.__(1, [evt.target.value]));
+          return Curry._1(dispatch, /* SetPassword */Block.__(2, [evt.target.value]));
       case "username" : 
-          return Curry._1(dispatch, /* SetUsername */Block.__(2, [evt.target.value]));
+          return Curry._1(dispatch, /* SetUsername */Block.__(0, [evt.target.value]));
       default:
         return /* () */0;
     }
@@ -67,10 +71,81 @@ function useForm(callback) {
         ];
 }
 
+function Form(Props) {
+  var formType = Props.formType;
+  var logger = function (param) {
+    console.log("Form submitted");
+    return /* () */0;
+  };
+  var match = useForm(logger);
+  var handleChange = match[1];
+  var state = match[0];
+  var match$1 = formType === "register";
+  return React.createElement("div", {
+              className: "section is-fullheight"
+            }, React.createElement("div", {
+                  className: "container"
+                }, React.createElement("div", {
+                      className: "column is-4 is-offset-4"
+                    }, React.createElement("h1", {
+                          className: "is-size-1 has-text-centered is-capitalized"
+                        }, formType), React.createElement("br", undefined), React.createElement("div", {
+                          className: "box"
+                        }, React.createElement("form", {
+                              onSubmit: match[2]
+                            }, match$1 ? React.createElement("div", {
+                                    className: "field"
+                                  }, React.createElement("label", {
+                                        className: "label"
+                                      }, "Username"), React.createElement("div", {
+                                        className: "control"
+                                      }, React.createElement("input", {
+                                            className: "input",
+                                            name: "username",
+                                            required: true,
+                                            type: "text",
+                                            value: state[/* username */0],
+                                            onChange: handleChange
+                                          }))) : null, React.createElement("div", {
+                                  className: "field"
+                                }, React.createElement("label", {
+                                      className: "label"
+                                    }, "Email Address"), React.createElement("div", {
+                                      className: "control"
+                                    }, React.createElement("input", {
+                                          className: "input",
+                                          name: "email",
+                                          required: true,
+                                          type: "email",
+                                          value: state[/* email */1],
+                                          onChange: handleChange
+                                        }))), React.createElement("div", {
+                                  className: "field"
+                                }, React.createElement("label", {
+                                      className: "label"
+                                    }, "Password"), React.createElement("div", {
+                                      className: "control"
+                                    }, React.createElement("input", {
+                                          className: "input",
+                                          name: "password",
+                                          required: true,
+                                          type: "password",
+                                          value: state[/* password */2],
+                                          onChange: handleChange
+                                        }))), React.createElement("button", {
+                                  className: "button is-block is-info is-fullwidth is-uppercase",
+                                  type: "submit"
+                                }, formType, React.createElement("br", undefined)))))));
+}
+
+var make = Form;
+
 export {
+  str ,
   initialState ,
   reducer ,
   useForm ,
+  make ,
   
 }
 /* react Not a pure module */

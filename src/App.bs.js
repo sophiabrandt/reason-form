@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.js";
+import * as Form$ReactHooksTemplate from "./Form.bs.js";
 import * as Main$ReactHooksTemplate from "./Main.bs.js";
-import * as Login$ReactHooksTemplate from "./Login.bs.js";
-import * as Register$ReactHooksTemplate from "./Register.bs.js";
 import * as NotFoundPage$ReactHooksTemplate from "./NotFoundPage.bs.js";
 
 function App(Props) {
@@ -17,14 +16,18 @@ function App(Props) {
           if (match[1]) {
             exit = 1;
           } else {
-            return React.createElement(Login$ReactHooksTemplate.make, { });
+            return React.createElement(Form$ReactHooksTemplate.make, {
+                        formType: "login"
+                      });
           }
           break;
       case "register" : 
           if (match[1]) {
             exit = 1;
           } else {
-            return React.createElement(Register$ReactHooksTemplate.make, { });
+            return React.createElement(Form$ReactHooksTemplate.make, {
+                        formType: "register"
+                      });
           }
           break;
       default:
