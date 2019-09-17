@@ -25,7 +25,10 @@ function NotFoundPage(Props) {
                         }, "or"), React.createElement("a", {
                           className: "is-size-4",
                           href: "/register"
-                        }, "Register"))));
+                        }, "Register"), React.createElement("hr", undefined), React.createElement("a", {
+                          className: "is-size-4",
+                          href: "/"
+                        }, "⬅️ Back to Homepage"))));
 }
 
 var make = NotFoundPage;
