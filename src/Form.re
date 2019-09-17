@@ -43,6 +43,7 @@ let useForm = (~callback) => {
     callback();
     dispatch(ResetState);
   };
+
   (state, handleChange, handleSubmit);
 };
 
