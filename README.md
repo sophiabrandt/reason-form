@@ -49,6 +49,14 @@
 
 > Build a form with ReasonReact and React hooks
 
+This repository follows my process of learning ReasonReact:
+
+- [Learning ReasonReact Step by Step Part: 0](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-0-48la)
+- [Learning ReasonReact Step by Step Part: 1](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-1-15ih)
+- [Learning ReasonReact Step by Step Part: 2](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-2-3h20)
+- [Learning ReasonReact Step by Step Part: 3](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-3-2010)
+- [Learning ReasonReact Step by Step Part: 4](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-4-114h)
+
 ### Built With
 
 - [ReasonML](https://reasonml.github.io/)
