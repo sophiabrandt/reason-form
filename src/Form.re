@@ -22,10 +22,11 @@ let reducer = (state, action) =>
   | ResetState => initialState
   };
 
-let useForm = (~callback) => {
+let useForm = (~callback, ~formType) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
+  let (errors, validate) = FormValidation.useValidation(~formType);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
   let handleChange = evt => {
@@ -40,18 +41,20 @@ let useForm = (~callback) => {
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
+    validate(state);
     callback();
     dispatch(ResetState);
   };
 
-  (state, handleChange, handleSubmit);
+  (state, errors, handleChange, handleSubmit);
 };
 
 [@react.component]
 let make = (~formType) => {
   let logger = () => Js.log("Form submitted");
 
-  let (state, handleChange, handleSubmit) = useForm(~callback=logger);
+  let (state, errors, handleChange, handleSubmit) =
+    useForm(~callback=logger, ~formType);
 
   <div className="section is-fullheight">
     <div className="container">
