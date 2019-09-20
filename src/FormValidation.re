@@ -1,31 +1,23 @@
-type error = {
-  field: string,
-  message: string,
-};
-
-type state = {errors: list(error)};
-
-let initialState = {errors: []};
+let initialState: FormData.validationErrors = {errors: []};
 
 type action =
   | UsernameRequired(string);
 
-let reducer = (state, action) =>
+let reducer = (state:FormData.validationErrors, action) =>
   switch (action) {
-  | UsernameRequired(_username) => {
+  | UsernameRequired(_username) => 
     // TODO: implement form validation rules
-      errors: [
-        {field: "username", message: "Username must be at least 5 characters."},
-        ...state.errors,
-      ],
-    }
+  let error: FormData.validationError = {field: "username", message: "Username must be at least 5 characters"};
+  let newState: FormData.validationErrors = {errors: [error, ...state.errors]};
+  Js.log(newState);
+  newState;
   };
 
 let useValidation = (~formType) => {
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
-  let validate = (~formData:Form.state) =>
-    if (formType === "login") {
+  let validate = (~formData: FormData.formState) =>
+    if (formType === "register") {
       dispatch(UsernameRequired(formData.username));
     };
 

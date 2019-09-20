@@ -3,6 +3,7 @@
 import * as Block from "bs-platform/lib/es6/block.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as FormValidation$ReactHooksTemplate from "./FormValidation.bs.js";
 
 function str(prim) {
   return prim;
@@ -42,9 +43,31 @@ function reducer(state, action) {
   }
 }
 
-function useForm(callback) {
-  var match = React.useReducer(reducer, initialState);
-  var dispatch = match[1];
+function useForm(callback, formType) {
+  var match = React.useState((function () {
+          return false;
+        }));
+  var setIsSubmitting = match[1];
+  var isSubmitting = match[0];
+  var match$1 = FormValidation$ReactHooksTemplate.useValidation(formType);
+  var validate = match$1[1];
+  var errors = match$1[0];
+  var match$2 = React.useReducer(reducer, initialState);
+  var dispatch = match$2[1];
+  var state = match$2[0];
+  React.useEffect((function () {
+          var match = errors[/* errors */0];
+          if (match) {
+            return undefined;
+          } else {
+            if (isSubmitting) {
+              console.log(state);
+              Curry._1(callback, /* () */0);
+              Curry._1(dispatch, /* ResetState */0);
+            }
+            return undefined;
+          }
+        }), /* array */[errors[/* errors */0]]);
   var handleChange = function (evt) {
     evt.persist();
     var match = evt.target.name;
@@ -61,11 +84,14 @@ function useForm(callback) {
   };
   var handleSubmit = function (evt) {
     evt.preventDefault();
-    Curry._1(callback, /* () */0);
-    return Curry._1(dispatch, /* ResetState */0);
+    Curry._1(validate, state);
+    return Curry._1(setIsSubmitting, (function (param) {
+                  return true;
+                }));
   };
   return /* tuple */[
-          match[0],
+          state,
+          errors,
           handleChange,
           handleSubmit
         ];
@@ -77,8 +103,8 @@ function Form(Props) {
     console.log("Form submitted");
     return /* () */0;
   };
-  var match = useForm(logger);
-  var handleChange = match[1];
+  var match = useForm(logger, formType);
+  var handleChange = match[2];
   var state = match[0];
   var match$1 = formType === "register";
   return React.createElement("div", {
@@ -92,7 +118,7 @@ function Form(Props) {
                         }, formType), React.createElement("br", undefined), React.createElement("div", {
                           className: "box"
                         }, React.createElement("form", {
-                              onSubmit: match[2]
+                              onSubmit: match[3]
                             }, match$1 ? React.createElement("div", {
                                     className: "field"
                                   }, React.createElement("label", {

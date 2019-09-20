@@ -1,12 +1,10 @@
 let str = ReasonReact.string;
 
-type state = {
-  username: string,
-  email: string,
-  password: string,
+let initialState: FormData.formState = {
+  username: "",
+  email: "",
+  password: "",
 };
-
-let initialState = {username: "", email: "", password: ""};
 
 type action =
   | SetUsername(string)
@@ -14,7 +12,7 @@ type action =
   | SetPassword(string)
   | ResetState;
 
-let reducer = (state, action) =>
+let reducer = (state: FormData.formState, action) =>
   switch (action) {
   | SetUsername(username) => {...state, username}
   | SetEmail(email) => {...state, email}
@@ -26,8 +24,24 @@ let useForm = (~callback, ~formType) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
+  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (errors, validate) = FormValidation.useValidation(~formType);
   let (state, dispatch) = React.useReducer(reducer, initialState);
+
+  React.useEffect1(
+    () =>
+      switch (errors.errors) {
+      | [] =>
+        if (isSubmitting) {
+          Js.log(state);
+          callback();
+          dispatch(ResetState);
+        };
+        None;
+      | _ => None
+      },
+    [|errors.errors|],
+  );
 
   let handleChange = evt => {
     ReactEvent.Form.persist(evt);
@@ -41,9 +55,8 @@ let useForm = (~callback, ~formType) => {
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
-    validate(state);
-    callback();
-    dispatch(ResetState);
+    validate(~formData=state);
+    setIsSubmitting(_ => true);
   };
 
   (state, errors, handleChange, handleSubmit);

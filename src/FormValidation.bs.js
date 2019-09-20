@@ -6,20 +6,22 @@ import * as React from "react";
 var initialState = /* record */[/* errors : [] */0];
 
 function reducer(state, action) {
-  return /* record */[/* errors : :: */[
-            /* record */[
-              /* field */"username",
-              /* message */"Username is required"
-            ],
-            state[/* errors */0]
-          ]];
+  var newState = /* record */[/* errors : :: */[
+      /* record */[
+        /* field */"username",
+        /* message */"Username must be at least 5 characters"
+      ],
+      state[/* errors */0]
+    ]];
+  console.log(newState);
+  return newState;
 }
 
 function useValidation(formType) {
   var match = React.useReducer(reducer, initialState);
   var dispatch = match[1];
   var validate = function (formData) {
-    if (formType === "login") {
+    if (formType === "register") {
       return Curry._1(dispatch, /* UsernameRequired */[formData[/* username */0]]);
     } else {
       return 0;
