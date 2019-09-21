@@ -60,24 +60,31 @@ function reducer(state, action) {
 }
 
 function useForm(formType, callback) {
-  var match = React.useState((function () {
+  var match = FormValidation$ReactHooksTemplate.useValidation(formType);
+  var validate = match[2];
+  var validationErrors = match[0];
+  var match$1 = React.useState((function () {
+          return validationErrors;
+        }));
+  var errors = match$1[0];
+  var match$2 = React.useState((function () {
           return false;
         }));
-  var setIsSubmitting = match[1];
-  var isSubmitting = match[0];
-  var match$1 = FormValidation$ReactHooksTemplate.useValidation(formType);
-  var validate = match$1[1];
-  var errors = match$1[0];
-  var match$2 = React.useReducer(reducer, initialState);
-  var dispatch = match$2[1];
-  var state = match$2[0];
+  var setIsSubmitting = match$2[1];
+  var isSubmitting = match$2[0];
+  var match$3 = React.useReducer(reducer, initialState);
+  var dispatch = match$3[1];
+  var state = match$3[0];
   React.useEffect((function () {
           var match = errors[/* errors */0];
-          console.log(errors[/* errors */0]);
           if (match) {
+            console.log("no effect");
             return undefined;
           } else {
+            console.log("match on empty errors list");
+            console.log(isSubmitting);
             if (isSubmitting) {
+              console.log("submitting");
               Curry._1(callback, /* () */0);
               Curry._1(dispatch, /* ResetState */0);
             }
@@ -100,7 +107,9 @@ function useForm(formType, callback) {
   };
   var handleSubmit = function (evt) {
     evt.preventDefault();
+    console.log("validate function called");
     Curry._1(validate, state);
+    console.log(errors[/* errors */0]);
     return Curry._1(setIsSubmitting, (function (param) {
                   return true;
                 }));

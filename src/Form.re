@@ -25,22 +25,27 @@ let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
+  let (validationErrors, updatedValidationErrors, validate) =
+    FormValidation.useValidation(~formType);
+  let (errors, setErrors) = React.useState(() => validationErrors);
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
-  let (errors, validate) = FormValidation.useValidation(~formType);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
   React.useEffect1(
     () =>
       switch (errors.errors) {
       | [] =>
-        Js.log(errors.errors);
+        Js.log("match on empty errors list");
+        Js.log(isSubmitting);
         if (isSubmitting) {
+          Js.log("submitting");
           callback();
           dispatch(ResetState);
         };
         None;
       | _ =>
-        Js.log(errors.errors);
+        Js.log("no effect");
+        ();
         None;
       },
     [|errors.errors|],
@@ -57,7 +62,9 @@ let useForm = (~formType, ~callback) => {
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
+    Js.log("validate function called");
     validate(~formData=state);
+    Js.log(errors.errors);
     setIsSubmitting(_ => true);
   };
 

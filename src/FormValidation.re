@@ -1,5 +1,6 @@
 [%%debugger.chrome];
 let initialState: FormData.validationErrors = {errors: []};
+let updatedState = React.useRef(initialState);
 
 type action =
   | UsernameRequired(string);
@@ -16,7 +17,8 @@ let reducer = (state: FormData.validationErrors, action) =>
         let newState: FormData.validationErrors = {
           errors: [error, ...state.errors],
         };
-        newState;
+        React.Ref.(updatedState->setCurrent(newState));
+        state;
       } :
       state
   };
@@ -29,5 +31,5 @@ let useValidation = (~formType) => {
       formData.username->UsernameRequired |> dispatch;
     };
 
-  (state, validate);
+  (state, updatedState, validate);
 };
