@@ -1,16 +1,24 @@
+[%%debugger.chrome];
 let initialState: FormData.validationErrors = {errors: []};
 
 type action =
   | UsernameRequired(string);
 
-let reducer = (state:FormData.validationErrors, action) =>
+let reducer = (state: FormData.validationErrors, action) =>
   switch (action) {
-  | UsernameRequired(_username) => 
-    // TODO: implement form validation rules
-  let error: FormData.validationError = {field: "username", message: "Username must be at least 5 characters"};
-  let newState: FormData.validationErrors = {errors: [error, ...state.errors]};
-  Js.log(newState);
-  newState;
+  | UsernameRequired(username) =>
+    username |> String.length < 5 ?
+      {
+        let error: FormData.validationError = {
+          field: "username",
+          message: "Username must be at least 5 characters",
+        };
+        let newState: FormData.validationErrors = {
+          errors: [error, ...state.errors],
+        };
+        newState;
+      } :
+      state
   };
 
 let useValidation = (~formType) => {
@@ -18,7 +26,7 @@ let useValidation = (~formType) => {
 
   let validate = (~formData: FormData.formState) =>
     if (formType === "register") {
-      dispatch(UsernameRequired(formData.username));
+      formData.username->UsernameRequired |> dispatch;
     };
 
   (state, validate);

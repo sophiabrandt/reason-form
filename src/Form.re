@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 let str = ReasonReact.string;
 
 let initialState: FormData.formState = {
@@ -20,7 +21,7 @@ let reducer = (state: FormData.formState, action) =>
   | ResetState => initialState
   };
 
-let useForm = (~callback, ~formType) => {
+let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
@@ -32,17 +33,18 @@ let useForm = (~callback, ~formType) => {
     () =>
       switch (errors.errors) {
       | [] =>
+        Js.log(errors.errors);
         if (isSubmitting) {
-          Js.log(state);
           callback();
           dispatch(ResetState);
         };
         None;
-      | _ => None
+      | _ =>
+        Js.log(errors.errors);
+        None;
       },
     [|errors.errors|],
   );
-
   let handleChange = evt => {
     ReactEvent.Form.persist(evt);
     switch (nameFromEvent(evt)) {
@@ -67,7 +69,7 @@ let make = (~formType) => {
   let logger = () => Js.log("Form submitted");
 
   let (state, errors, handleChange, handleSubmit) =
-    useForm(~callback=logger, ~formType);
+    useForm(~formType, ~callback=logger);
 
   <div className="section is-fullheight">
     <div className="container">

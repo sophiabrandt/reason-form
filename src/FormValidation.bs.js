@@ -2,19 +2,26 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
-var initialState = /* record */[/* errors : [] */0];
+var initialState = /* record */Caml_chrome_debugger.record(["errors"], [0]);
 
 function reducer(state, action) {
-  var newState = /* record */[/* errors : :: */[
-      /* record */[
-        /* field */"username",
-        /* message */"Username must be at least 5 characters"
-      ],
-      state[/* errors */0]
-    ]];
-  console.log(newState);
-  return newState;
+  var match = action[0].length < 5;
+  if (match) {
+    return /* record */Caml_chrome_debugger.record(["errors"], [Caml_chrome_debugger.simpleVariant("::", [
+                  /* record */Caml_chrome_debugger.record([
+                      "field",
+                      "message"
+                    ], [
+                      "username",
+                      "Username must be at least 5 characters"
+                    ]),
+                  state[/* errors */0]
+                ])]);
+  } else {
+    return state;
+  }
 }
 
 function useValidation(formType) {
@@ -22,7 +29,7 @@ function useValidation(formType) {
   var dispatch = match[1];
   var validate = function (formData) {
     if (formType === "register") {
-      return Curry._1(dispatch, /* UsernameRequired */[formData[/* username */0]]);
+      return Curry._1(dispatch, /* UsernameRequired */Caml_chrome_debugger.simpleVariant("UsernameRequired", [formData[/* username */0]]));
     } else {
       return 0;
     }
