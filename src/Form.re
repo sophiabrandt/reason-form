@@ -65,10 +65,18 @@ module FormErrors = {
   [@react.component]
   let make = (~formType, ~errors: FormTypes.validationErrors) =>
     <div>
-      <ul className="">
+      <ul>
         {
           List.map(
-            error => <li key={error.id}> {error.message |> str} </li>,
+            error =>
+              <li
+                key={error.FormTypes.id |> string_of_int}
+                className={
+                  error.valid ?
+                    "help is-success is-size-6" : "help is-danger is-size-6"
+                }>
+                {error.FormTypes.message |> str}
+              </li>,
             errors,
           )
           |> Array.of_list
@@ -92,13 +100,13 @@ let make = (~formType) => {
           {formType |> str}
         </h1>
         <br />
-        <div className="box">
-          {
-            switch (errors) {
-            | [] => ReasonReact.null
-            | _ => <FormErrors formType errors />
-            }
+        {
+          switch (errors) {
+          | [] => ReasonReact.null
+          | _ => <FormErrors formType errors />
           }
+        }
+        <div className="box">
           <form onSubmit=handleSubmit>
             {
               formType === "register" ?

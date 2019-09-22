@@ -13,6 +13,7 @@ let reducer = (state: FormTypes.validationErrors, action) =>
           id: 1,
           field: "username",
           message: "Username must be at least 5 characters",
+          valid: false,
         };
         let newState: FormTypes.validationErrors = [error, ...state];
         newState;

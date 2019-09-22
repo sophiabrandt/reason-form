@@ -119,10 +119,12 @@ function useForm(formType, callback) {
 function Form$FormErrors(Props) {
   Props.formType;
   var errors = Props.errors;
-  return React.createElement("div", undefined, React.createElement("ul", {
-                  className: ""
-                }, $$Array.of_list(List.map((function (error) {
-                            return React.createElement("li", undefined);
+  return React.createElement("div", undefined, React.createElement("ul", undefined, $$Array.of_list(List.map((function (error) {
+                            var match = error[/* valid */3];
+                            return React.createElement("li", {
+                                        key: String(error[/* id */0]),
+                                        className: match ? "help is-success is-size-6" : "help is-danger is-size-6"
+                                      }, error[/* message */2]);
                           }), errors))));
 }
 
@@ -147,12 +149,12 @@ function Form(Props) {
                       className: "column is-4 is-offset-4"
                     }, React.createElement("h1", {
                           className: "is-size-1 has-text-centered is-capitalized"
-                        }, formType), React.createElement("br", undefined), React.createElement("div", {
+                        }, formType), React.createElement("br", undefined), errors ? React.createElement(Form$FormErrors, {
+                            formType: formType,
+                            errors: errors
+                          }) : null, React.createElement("div", {
                           className: "box"
-                        }, errors ? React.createElement(Form$FormErrors, {
-                                formType: formType,
-                                errors: errors
-                              }) : null, React.createElement("form", {
+                        }, React.createElement("form", {
                               onSubmit: match[3]
                             }, match$1 ? React.createElement("div", {
                                     className: "field"

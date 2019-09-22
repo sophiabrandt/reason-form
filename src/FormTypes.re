@@ -8,6 +8,7 @@ type validationError = {
   id: int,
   field: string,
   message: string,
+  mutable valid: bool,
 };
 
 type validationErrors = list(validationError);

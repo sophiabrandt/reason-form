@@ -7,16 +7,19 @@ import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.
 function reducer(state, action) {
   var match = action[0].length < 5;
   if (match) {
+    var error = /* record */Caml_chrome_debugger.record([
+        "id",
+        "field",
+        "message",
+        "valid"
+      ], [
+        1,
+        "username",
+        "Username must be at least 5 characters",
+        false
+      ]);
     return /* :: */Caml_chrome_debugger.simpleVariant("::", [
-              /* record */Caml_chrome_debugger.record([
-                  "id",
-                  "field",
-                  "message"
-                ], [
-                  1,
-                  "username",
-                  "Username must be at least 5 characters"
-                ]),
+              error,
               state
             ]);
   } else {
