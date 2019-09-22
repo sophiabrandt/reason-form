@@ -4,28 +4,28 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
-var initialState = /* record */Caml_chrome_debugger.record(["errors"], [0]);
-
 function reducer(state, action) {
   var match = action[0].length < 5;
   if (match) {
-    return /* record */Caml_chrome_debugger.record(["errors"], [Caml_chrome_debugger.simpleVariant("::", [
-                  /* record */Caml_chrome_debugger.record([
-                      "field",
-                      "message"
-                    ], [
-                      "username",
-                      "Username must be at least 5 characters"
-                    ]),
-                  state[/* errors */0]
-                ])]);
+    return /* :: */Caml_chrome_debugger.simpleVariant("::", [
+              /* record */Caml_chrome_debugger.record([
+                  "id",
+                  "field",
+                  "message"
+                ], [
+                  1,
+                  "username",
+                  "Username must be at least 5 characters"
+                ]),
+              state
+            ]);
   } else {
     return state;
   }
 }
 
 function useValidation(formType) {
-  var match = React.useReducer(reducer, initialState);
+  var match = React.useReducer(reducer, /* [] */0);
   var dispatch = match[1];
   var validate = function (formData) {
     if (formType === "register") {
@@ -39,6 +39,8 @@ function useValidation(formType) {
           validate
         ];
 }
+
+var initialState = /* [] */0;
 
 export {
   initialState ,

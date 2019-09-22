@@ -1,7 +1,7 @@
 [%%debugger.chrome];
 let str = ReasonReact.string;
 
-let initialState: FormData.formState = {
+let initialState: FormTypes.formState = {
   username: "",
   email: "",
   password: "",
@@ -13,7 +13,7 @@ type action =
   | SetPassword(string)
   | ResetState;
 
-let reducer = (state: FormData.formState, action) =>
+let reducer = (state: FormTypes.formState, action) =>
   switch (action) {
   | SetUsername(username) => {...state, username}
   | SetEmail(email) => {...state, email}
@@ -25,29 +25,22 @@ let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
-  let (validationErrors, validate) = FormValidation.useValidation(~formType);
-  let (errors, setErrors) = React.useState(() => validationErrors);
+  let (errors, validate) = FormValidation.useValidation(~formType);
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
-  React.useEffect1(
+  React.useEffect2(
     () =>
-      switch (errors.errors) {
+      switch (errors) {
       | [] =>
-        Js.log("match on empty errors list");
-        Js.log(isSubmitting);
         if (isSubmitting) {
-          Js.log("submitting");
           callback();
           dispatch(ResetState);
         };
         None;
-      | _ =>
-        Js.log("no effect");
-        ();
-        None;
+      | _ => None
       },
-    [|errors.errors|],
+    (errors, isSubmitting),
   );
   let handleChange = evt => {
     ReactEvent.Form.persist(evt);
@@ -61,13 +54,28 @@ let useForm = (~formType, ~callback) => {
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
-    Js.log("validate function called");
     validate(~formData=state);
-    Js.log(errors.errors);
     setIsSubmitting(_ => true);
   };
 
   (state, errors, handleChange, handleSubmit);
+};
+
+module FormErrors = {
+  [@react.component]
+  let make = (~formType, ~errors: FormTypes.validationErrors) =>
+    <div>
+      <ul className="">
+        {
+          List.map(
+            error => <li key={error.id}> {error.message |> str} </li>,
+            errors,
+          )
+          |> Array.of_list
+          |> React.array
+        }
+      </ul>
+    </div>;
 };
 
 [@react.component]
@@ -85,6 +93,12 @@ let make = (~formType) => {
         </h1>
         <br />
         <div className="box">
+          {
+            switch (errors) {
+            | [] => ReasonReact.null
+            | _ => <FormErrors formType errors />
+            }
+          }
           <form onSubmit=handleSubmit>
             {
               formType === "register" ?
