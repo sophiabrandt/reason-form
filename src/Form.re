@@ -25,8 +25,7 @@ let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
-  let (validationErrors, updatedValidationErrors, validate) =
-    FormValidation.useValidation(~formType);
+  let (validationErrors, validate) = FormValidation.useValidation(~formType);
   let (errors, setErrors) = React.useState(() => validationErrors);
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (state, dispatch) = React.useReducer(reducer, initialState);

@@ -61,7 +61,7 @@ function reducer(state, action) {
 
 function useForm(formType, callback) {
   var match = FormValidation$ReactHooksTemplate.useValidation(formType);
-  var validate = match[2];
+  var validate = match[1];
   var validationErrors = match[0];
   var match$1 = React.useState((function () {
           return validationErrors;
