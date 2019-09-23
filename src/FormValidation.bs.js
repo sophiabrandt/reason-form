@@ -2,51 +2,141 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
+var noFormRules = /* array */[];
+
+var registerFormRules = /* array */[
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      1,
+      "username",
+      "Username must have at least 5 characters.",
+      false
+    ]),
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      2,
+      "email",
+      "Email must have at least 5 characters.",
+      false
+    ]),
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      3,
+      "email",
+      "Email must be a valid email address.",
+      false
+    ]),
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      4,
+      "password",
+      "Password must be greater than 10 characters.",
+      false
+    ])
+];
+
+var loginFormRules = /* array */[
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      5,
+      "email",
+      "Email is required.",
+      false
+    ]),
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      6,
+      "password",
+      "Password is required.",
+      false
+    ])
+];
+
 function reducer(state, action) {
-  var match = action[0].length < 5;
-  if (match) {
-    var error = /* record */Caml_chrome_debugger.record([
-        "id",
-        "field",
-        "message",
-        "valid"
-      ], [
-        1,
-        "username",
-        "Username must be at least 5 characters",
-        false
-      ]);
-    return /* :: */Caml_chrome_debugger.simpleVariant("::", [
-              error,
-              state
-            ]);
+  if (action.tag) {
+    var match = action[0].length > 4;
+    if (match) {
+      Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
+      return state;
+    } else {
+      return state;
+    }
   } else {
-    return state;
+    var match$1 = action[0].length > 4;
+    if (match$1) {
+      Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
+      return state;
+    } else {
+      return state;
+    }
   }
 }
 
 function useValidation(formType) {
-  var match = React.useReducer(reducer, /* [] */0);
-  var dispatch = match[1];
-  var validate = function (formData) {
-    if (formType === "register") {
-      return Curry._1(dispatch, /* UsernameRequired */Caml_chrome_debugger.simpleVariant("UsernameRequired", [formData[/* username */0]]));
-    } else {
-      return 0;
-    }
-  };
-  return /* tuple */[
-          match[0],
-          validate
-        ];
+  switch (formType) {
+    case "login" : 
+        var match = React.useReducer(reducer, loginFormRules);
+        var validate = function (formData) {
+          return /* () */0;
+        };
+        return /* tuple */[
+                match[0],
+                validate
+              ];
+    case "register" : 
+        var match$1 = React.useReducer(reducer, registerFormRules);
+        var dispatch = match$1[1];
+        var validate$1 = function (param) {
+          Curry._1(dispatch, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [param[/* username */0]]));
+          return Curry._1(dispatch, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [param[/* email */1]]));
+        };
+        return /* tuple */[
+                match$1[0],
+                validate$1
+              ];
+    default:
+      var match$2 = React.useReducer(reducer, noFormRules);
+      var validate$2 = function (formData) {
+        return /* () */0;
+      };
+      return /* tuple */[
+              match$2[0],
+              validate$2
+            ];
+  }
 }
 
-var initialState = /* [] */0;
-
 export {
-  initialState ,
+  noFormRules ,
+  registerFormRules ,
+  loginFormRules ,
   reducer ,
   useValidation ,
   

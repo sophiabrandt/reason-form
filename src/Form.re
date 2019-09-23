@@ -25,23 +25,25 @@ let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
-  let (errors, validate) = FormValidation.useValidation(~formType);
-  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
+  let (formRules, validate) = FormValidation.useValidation(~formType);
+  let (valid, setIsValid) = React.useState(() => false);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
   React.useEffect2(
     () =>
-      switch (errors) {
-      | [] =>
-        if (isSubmitting) {
+      valid ?
+        {
           callback();
           dispatch(ResetState);
-        };
-        None;
-      | _ => None
-      },
-    (errors, isSubmitting),
+          None;
+        } :
+        None,
+    (formRules, valid),
   );
+
+  let allValid = (~formRules) =>
+    Belt.Array.every(formRules, rule => rule.FormTypes.valid);
+
   let handleChange = evt => {
     ReactEvent.Form.persist(evt);
     switch (nameFromEvent(evt)) {
@@ -55,31 +57,30 @@ let useForm = (~formType, ~callback) => {
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
     validate(~formData=state);
-    setIsSubmitting(_ => true);
+    setIsValid(_ => allValid(~formRules));
   };
 
-  (state, errors, handleChange, handleSubmit);
+  (state, formRules, handleChange, handleSubmit);
 };
 
 module FormErrors = {
   [@react.component]
-  let make = (~formType, ~errors: FormTypes.validationErrors) =>
+  let make = (~formRules: FormTypes.formRules) =>
     <div>
       <ul>
         {
-          List.map(
-            error =>
+          Array.map(
+            rule =>
               <li
-                key={error.FormTypes.id |> string_of_int}
+                key={rule.FormTypes.id |> string_of_int}
                 className={
-                  error.valid ?
-                    "help is-success is-size-6" : "help is-danger is-size-6"
+                  rule.valid ?
+                    "is-success help is-size-6" : "is-danger help is-size-6"
                 }>
-                {error.FormTypes.message |> str}
+                {rule.FormTypes.message |> str}
               </li>,
-            errors,
+            formRules,
           )
-          |> Array.of_list
           |> React.array
         }
       </ul>
@@ -90,7 +91,7 @@ module FormErrors = {
 let make = (~formType) => {
   let logger = () => Js.log("Form submitted");
 
-  let (state, errors, handleChange, handleSubmit) =
+  let (state, formRules, handleChange, handleSubmit) =
     useForm(~formType, ~callback=logger);
 
   <div className="section is-fullheight">
@@ -101,11 +102,12 @@ let make = (~formType) => {
         </h1>
         <br />
         {
-          switch (errors) {
-          | [] => ReasonReact.null
-          | _ => <FormErrors formType errors />
+          switch (formRules) {
+          | [||] => ReasonReact.null
+          | _ => <FormErrors formRules />
           }
         }
+        <br />
         <div className="box">
           <form onSubmit=handleSubmit>
             {

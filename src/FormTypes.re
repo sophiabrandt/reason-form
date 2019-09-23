@@ -4,11 +4,11 @@ type formState = {
   password: string,
 };
 
-type validationError = {
+type formRule = {
   id: int,
   field: string,
   message: string,
   mutable valid: bool,
 };
 
-type validationErrors = list(validationError);
+type formRules = array(formRule);
