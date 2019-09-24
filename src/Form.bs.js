@@ -73,7 +73,7 @@ function useForm(formType, callback) {
   var match$2 = React.useReducer(reducer, initialState);
   var dispatch = match$2[1];
   var state = match$2[0];
-  React.useEffect((function (param) {
+  React.useEffect((function () {
           if (valid) {
             Curry._1(callback, /* () */0);
             Curry._1(dispatch, /* ResetState */0);
@@ -82,7 +82,6 @@ function useForm(formType, callback) {
           
         }), /* tuple */[
         formRules,
-        validate,
         valid
       ]);
   var handleChange = function (evt) {
@@ -123,10 +122,13 @@ function Form$FormErrors(Props) {
   var formRules = Props.formRules;
   return React.createElement("div", undefined, React.createElement("ul", undefined, $$Array.map((function (rule) {
                         var match = rule[/* valid */3];
+                        var match$1 = rule[/* valid */3];
                         return React.createElement("li", {
                                     key: String(rule[/* id */0]),
                                     className: match ? "is-success help is-size-6" : "is-danger help is-size-6"
-                                  }, rule[/* message */2]);
+                                  }, React.createElement("i", {
+                                        className: match$1 ? "fas fa-check" : "fas fa-times"
+                                      }), " ", rule[/* message */2]);
                       }), formRules)));
 }
 

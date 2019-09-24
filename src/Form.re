@@ -29,7 +29,7 @@ let useForm = (~formType, ~callback) => {
   let (valid, setIsValid) = React.useState(() => false);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
-  React.useEffect3(
+  React.useEffect2(
     () =>
       valid ?
         {
@@ -38,7 +38,7 @@ let useForm = (~formType, ~callback) => {
           None;
         } :
         None,
-    (formRules, validate, valid),
+    (formRules, valid),
   );
 
   let allValid = (~formRules) =>
@@ -77,6 +77,8 @@ module FormErrors = {
                   rule.valid ?
                     "is-success help is-size-6" : "is-danger help is-size-6"
                 }>
+                <i className={rule.valid ? "fas fa-check" : "fas fa-times"} />
+                {" " |> str}
                 {rule.FormTypes.message |> str}
               </li>,
             formRules,
