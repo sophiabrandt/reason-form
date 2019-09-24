@@ -1,4 +1,3 @@
-[%%debugger.chrome];
 let str = ReasonReact.string;
 
 let initialState: FormTypes.formState = {

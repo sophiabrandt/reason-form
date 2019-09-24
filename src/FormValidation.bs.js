@@ -87,19 +87,21 @@ function validateEmail(email) {
 function reducer(state, action) {
   switch (action.tag | 0) {
     case 0 : 
-        var match = action[0].length >= 5;
+        var match = action[0].length >= 4;
         if (match) {
           Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
           return state;
         } else {
+          Caml_array.caml_array_get(state, 0)[/* valid */3] = false;
           return state;
         }
     case 1 : 
-        var match$1 = action[0].length >= 5;
+        var match$1 = action[0].length >= 4;
         if (match$1) {
           Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
           return state;
         } else {
+          Caml_array.caml_array_get(state, 1)[/* valid */3] = false;
           return state;
         }
     case 2 : 
@@ -108,14 +110,16 @@ function reducer(state, action) {
           Caml_array.caml_array_get(state, 2)[/* valid */3] = true;
           return state;
         } else {
+          Caml_array.caml_array_get(state, 2)[/* valid */3] = false;
           return state;
         }
     case 3 : 
-        var match$3 = action[0].length >= 10;
+        var match$3 = action[0].length >= 9;
         if (match$3) {
           Caml_array.caml_array_get(state, 3)[/* valid */3] = true;
           return state;
         } else {
+          Caml_array.caml_array_get(state, 3)[/* valid */3] = false;
           return state;
         }
     case 4 : 
@@ -124,6 +128,7 @@ function reducer(state, action) {
           Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
           return state;
         } else {
+          Caml_array.caml_array_get(state, 0)[/* valid */3] = false;
           return state;
         }
     case 5 : 
@@ -132,6 +137,7 @@ function reducer(state, action) {
           Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
           return state;
         } else {
+          Caml_array.caml_array_get(state, 1)[/* valid */3] = false;
           return state;
         }
     

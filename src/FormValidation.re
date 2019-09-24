@@ -1,5 +1,3 @@
-[%%debugger.chrome];
-
 let noFormRules: FormTypes.formRules = [||];
 
 let registerFormRules: FormTypes.formRules = [|
@@ -52,47 +50,65 @@ type action =
 let reducer = (state: FormTypes.formRules, action) =>
   switch (action) {
   | UsernameLongEnough(username) =>
-    username |> String.length >= 5 ?
+    username |> String.length >= 4 ?
       {
         state[0].valid = true;
         state;
       } :
-      state
+      {
+        state[0].valid = false;
+        state;
+      }
   | EmailLongEnough(email) =>
-    email |> String.length >= 5 ?
+    email |> String.length >= 4 ?
       {
         state[1].valid = true;
         state;
       } :
-      state
+      {
+        state[1].valid = false;
+        state;
+      }
   | EmailValid(email) =>
     email |> validateEmail ?
       {
         state[2].valid = true;
         state;
       } :
-      state
+      {
+        state[2].valid = false;
+        state;
+      }
   | PasswordLongEnough(password) =>
-    password |> String.length >= 10 ?
+    password |> String.length >= 9 ?
       {
         state[3].valid = true;
         state;
       } :
-      state
+      {
+        state[3].valid = false;
+        state;
+      }
   | EmailRequired(email) =>
     email |> String.length > 0 ?
       {
         state[0].valid = true;
         state;
       } :
-      state
+      {
+        state[0].valid = false;
+        state;
+      }
   | PasswordRequired(password) =>
     password |> String.length > 0 ?
       {
         state[1].valid = true;
         state;
       } :
-      state
+      {
+        state[1].valid = false;
+        state;
+      }
   };
 
 let useValidation = (~formType) =>
