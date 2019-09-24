@@ -49,7 +49,7 @@ var registerFormRules = /* array */[
     ], [
       4,
       "password",
-      "Password must be greater than 10 characters.",
+      "Password must have at least 10 characters.",
       false
     ])
 ];
@@ -61,7 +61,7 @@ var loginFormRules = /* array */[
       "message",
       "valid"
     ], [
-      5,
+      1,
       "email",
       "Email is required.",
       false
@@ -72,30 +72,69 @@ var loginFormRules = /* array */[
       "message",
       "valid"
     ], [
-      6,
+      2,
       "password",
       "Password is required.",
       false
     ])
 ];
 
+function validateEmail(email) {
+  var re = (/^(([^<>()\[\]\.,;:\s@']+(\.[^<>()\[\]\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  return re.test(email);
+}
+
 function reducer(state, action) {
-  if (action.tag) {
-    var match = action[0].length > 4;
-    if (match) {
-      Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
-      return state;
-    } else {
-      return state;
-    }
-  } else {
-    var match$1 = action[0].length > 4;
-    if (match$1) {
-      Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
-      return state;
-    } else {
-      return state;
-    }
+  switch (action.tag | 0) {
+    case 0 : 
+        var match = action[0].length >= 5;
+        if (match) {
+          Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
+          return state;
+        } else {
+          return state;
+        }
+    case 1 : 
+        var match$1 = action[0].length >= 5;
+        if (match$1) {
+          Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
+          return state;
+        } else {
+          return state;
+        }
+    case 2 : 
+        var match$2 = validateEmail(action[0]);
+        if (match$2) {
+          Caml_array.caml_array_get(state, 2)[/* valid */3] = true;
+          return state;
+        } else {
+          return state;
+        }
+    case 3 : 
+        var match$3 = action[0].length >= 10;
+        if (match$3) {
+          Caml_array.caml_array_get(state, 3)[/* valid */3] = true;
+          return state;
+        } else {
+          return state;
+        }
+    case 4 : 
+        var match$4 = action[0].length !== 0;
+        if (match$4) {
+          Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
+          return state;
+        } else {
+          return state;
+        }
+    case 5 : 
+        var match$5 = action[0].length !== 0;
+        if (match$5) {
+          Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
+          return state;
+        } else {
+          return state;
+        }
+    
   }
 }
 
@@ -103,8 +142,10 @@ function useValidation(formType) {
   switch (formType) {
     case "login" : 
         var match = React.useReducer(reducer, loginFormRules);
-        var validate = function (formData) {
-          return /* () */0;
+        var dispatch = match[1];
+        var validate = function (param) {
+          Curry._1(dispatch, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 4, [param[/* email */1]]));
+          return Curry._1(dispatch, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 5, [param[/* password */2]]));
         };
         return /* tuple */[
                 match[0],
@@ -112,10 +153,13 @@ function useValidation(formType) {
               ];
     case "register" : 
         var match$1 = React.useReducer(reducer, registerFormRules);
-        var dispatch = match$1[1];
+        var dispatch$1 = match$1[1];
         var validate$1 = function (param) {
-          Curry._1(dispatch, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [param[/* username */0]]));
-          return Curry._1(dispatch, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [param[/* email */1]]));
+          var email = param[/* email */1];
+          Curry._1(dispatch$1, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [param[/* username */0]]));
+          Curry._1(dispatch$1, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [email]));
+          Curry._1(dispatch$1, /* EmailValid */Caml_chrome_debugger.variant("EmailValid", 2, [email]));
+          return Curry._1(dispatch$1, /* PasswordLongEnough */Caml_chrome_debugger.variant("PasswordLongEnough", 3, [param[/* password */2]]));
         };
         return /* tuple */[
                 match$1[0],
@@ -123,7 +167,7 @@ function useValidation(formType) {
               ];
     default:
       var match$2 = React.useReducer(reducer, noFormRules);
-      var validate$2 = function (formData) {
+      var validate$2 = function (param) {
         return /* () */0;
       };
       return /* tuple */[
@@ -137,6 +181,7 @@ export {
   noFormRules ,
   registerFormRules ,
   loginFormRules ,
+  validateEmail ,
   reducer ,
   useValidation ,
   
