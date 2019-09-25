@@ -5,8 +5,6 @@ import * as React from "react";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
-var noFormRules = /* array */[];
-
 var registerFormRules = /* array */[
   /* record */Caml_chrome_debugger.record([
       "id",
@@ -84,7 +82,7 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-function reducer(state, action) {
+function registerFormRulesReducer(state, action) {
   switch (action.tag | 0) {
     case 0 : 
         var match = action[0].length >= 4;
@@ -122,43 +120,47 @@ function reducer(state, action) {
           Caml_array.caml_array_get(state, 3)[/* valid */3] = false;
           return state;
         }
-    case 4 : 
-        var match$4 = action[0].length !== 0;
-        if (match$4) {
-          Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
-          return state;
-        } else {
-          Caml_array.caml_array_get(state, 0)[/* valid */3] = false;
-          return state;
-        }
-    case 5 : 
-        var match$5 = action[0].length !== 0;
-        if (match$5) {
-          Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
-          return state;
-        } else {
-          Caml_array.caml_array_get(state, 1)[/* valid */3] = false;
-          return state;
-        }
     
+  }
+}
+
+function loginFormRulesReducer(state, action) {
+  if (action.tag) {
+    var match = action[0].length !== 0;
+    if (match) {
+      Caml_array.caml_array_get(state, 2)[/* valid */3] = true;
+      return state;
+    } else {
+      Caml_array.caml_array_get(state, 2)[/* valid */3] = false;
+      return state;
+    }
+  } else {
+    var match$1 = action[0].length !== 0;
+    if (match$1) {
+      Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
+      return state;
+    } else {
+      Caml_array.caml_array_get(state, 0)[/* valid */3] = false;
+      return state;
+    }
   }
 }
 
 function useValidation(formType) {
   switch (formType) {
     case "login" : 
-        var match = React.useReducer(reducer, loginFormRules);
+        var match = React.useReducer(loginFormRulesReducer, loginFormRules);
         var dispatch = match[1];
         var validate = function (param) {
-          Curry._1(dispatch, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 4, [param[/* email */1]]));
-          return Curry._1(dispatch, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 5, [param[/* password */2]]));
+          Curry._1(dispatch, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 0, [param[/* email */1]]));
+          return Curry._1(dispatch, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 1, [param[/* password */2]]));
         };
         return /* tuple */[
                 match[0],
                 validate
               ];
     case "register" : 
-        var match$1 = React.useReducer(reducer, registerFormRules);
+        var match$1 = React.useReducer(registerFormRulesReducer, registerFormRules);
         var dispatch$1 = match$1[1];
         var validate$1 = function (param) {
           var email = param[/* email */1];
@@ -172,23 +174,23 @@ function useValidation(formType) {
                 validate$1
               ];
     default:
-      var match$2 = React.useReducer(reducer, noFormRules);
+      var state = /* array */[];
       var validate$2 = function (param) {
         return /* () */0;
       };
       return /* tuple */[
-              match$2[0],
+              state,
               validate$2
             ];
   }
 }
 
 export {
-  noFormRules ,
   registerFormRules ,
   loginFormRules ,
   validateEmail ,
-  reducer ,
+  registerFormRulesReducer ,
+  loginFormRulesReducer ,
   useValidation ,
   
 }

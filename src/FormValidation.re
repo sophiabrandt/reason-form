@@ -1,5 +1,3 @@
-let noFormRules: FormTypes.formRules = [||];
-
 let registerFormRules: FormTypes.formRules = [|
   {
     id: 1,
@@ -39,15 +37,18 @@ let validateEmail = email => {
   email |> Js.Re.test_(re);
 };
 
-type action =
+type registerFormRulesAction =
   | UsernameLongEnough(string)
   | EmailLongEnough(string)
   | EmailValid(string)
-  | PasswordLongEnough(string)
+  | PasswordLongEnough(string);
+
+type loginFormRulesAction =
   | EmailRequired(string)
   | PasswordRequired(string);
 
-let reducer = (state: FormTypes.formRules, action) =>
+let registerFormRulesReducer =
+    (state: FormTypes.formRules, action: registerFormRulesAction) =>
   switch (action) {
   | UsernameLongEnough(username) =>
     username |> String.length >= 4 ?
@@ -89,6 +90,11 @@ let reducer = (state: FormTypes.formRules, action) =>
         state[3].valid = false;
         state;
       }
+  };
+
+let loginFormRulesReducer =
+    (state: FormTypes.formRules, action: loginFormRulesAction) =>
+  switch (action) {
   | EmailRequired(email) =>
     email |> String.length > 0 ?
       {
@@ -102,11 +108,11 @@ let reducer = (state: FormTypes.formRules, action) =>
   | PasswordRequired(password) =>
     password |> String.length > 0 ?
       {
-        state[1].valid = true;
+        state[2].valid = true;
         state;
       } :
       {
-        state[1].valid = false;
+        state[2].valid = false;
         state;
       }
   };
@@ -114,7 +120,8 @@ let reducer = (state: FormTypes.formRules, action) =>
 let useValidation = (~formType) =>
   switch (formType) {
   | "register" =>
-    let (state, dispatch) = React.useReducer(reducer, registerFormRules);
+    let (state, dispatch) =
+      React.useReducer(registerFormRulesReducer, registerFormRules);
     let validate =
         (~formData as {username, email, password}: FormTypes.formState) => {
       username->UsernameLongEnough |> dispatch;
@@ -124,14 +131,15 @@ let useValidation = (~formType) =>
     };
     (state, validate);
   | "login" =>
-    let (state, dispatch) = React.useReducer(reducer, loginFormRules);
+    let (state, dispatch) =
+      React.useReducer(loginFormRulesReducer, loginFormRules);
     let validate = (~formData as {email, password}: FormTypes.formState) => {
       email->EmailRequired |> dispatch;
       password->PasswordRequired |> dispatch;
     };
     (state, validate);
   | _ =>
-    let (state, _dispatch) = React.useReducer(reducer, noFormRules);
+    let state: FormTypes.formRules = [||];
     let validate = (~formData as _: FormTypes.formState) => ();
     (state, validate);
   };
