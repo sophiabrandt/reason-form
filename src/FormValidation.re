@@ -27,7 +27,13 @@ let registerFormRules: FormTypes.formRules = [|
 
 let loginFormRules: FormTypes.formRules = [|
   {id: 1, field: "email", message: "Email is required.", valid: false},
-  {id: 2, field: "password", message: "Password is required.", valid: false},
+  {
+    id: 2,
+    field: "email",
+    message: "Email must be a valid email address.",
+    valid: false,
+  },
+  {id: 3, field: "password", message: "Password is required.", valid: false},
 |];
 
 let validateEmail = email => {
@@ -40,11 +46,12 @@ let validateEmail = email => {
 type registerFormRulesAction =
   | UsernameLongEnough(string)
   | EmailLongEnough(string)
-  | EmailValid(string)
+  | EmailForRegistrationValid(string)
   | PasswordLongEnough(string);
 
 type loginFormRulesAction =
   | EmailRequired(string)
+  | EmailForLoginValid(string)
   | PasswordRequired(string);
 
 let registerFormRulesReducer =
@@ -70,7 +77,7 @@ let registerFormRulesReducer =
         state[1].valid = false;
         state;
       }
-  | EmailValid(email) =>
+  | EmailForRegistrationValid(email) =>
     email |> validateEmail ?
       {
         state[2].valid = true;
@@ -96,7 +103,7 @@ let loginFormRulesReducer =
     (state: FormTypes.formRules, action: loginFormRulesAction) =>
   switch (action) {
   | EmailRequired(email) =>
-    email |> String.length >= 0 ?
+    email |> String.length > 0 ?
       {
         state[0].valid = true;
         state;
@@ -105,14 +112,24 @@ let loginFormRulesReducer =
         state[0].valid = false;
         state;
       }
-  | PasswordRequired(password) =>
-    password |> String.length >= 0 ?
+  | EmailForLoginValid(email) =>
+    email |> validateEmail ?
       {
         state[1].valid = true;
         state;
       } :
       {
         state[1].valid = false;
+        state;
+      }
+  | PasswordRequired(password) =>
+    password |> String.length > 0 ?
+      {
+        state[2].valid = true;
+        state;
+      } :
+      {
+        state[2].valid = false;
         state;
       }
   };
@@ -126,7 +143,7 @@ let useValidation = (~formType) =>
         (~formData as {username, email, password}: FormTypes.formState) => {
       username->UsernameLongEnough |> dispatch;
       email->EmailLongEnough |> dispatch;
-      email->EmailValid |> dispatch;
+      email->EmailForRegistrationValid |> dispatch;
       password->PasswordLongEnough |> dispatch;
     };
     (state, validate);
@@ -135,6 +152,7 @@ let useValidation = (~formType) =>
       React.useReducer(loginFormRulesReducer, loginFormRules);
     let validate = (~formData as {email, password}: FormTypes.formState) => {
       email->EmailRequired |> dispatch;
+      email->EmailForLoginValid |> dispatch;
       password->PasswordRequired |> dispatch;
     };
     (state, validate);

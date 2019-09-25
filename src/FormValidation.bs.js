@@ -71,6 +71,17 @@ var loginFormRules = /* array */[
       "valid"
     ], [
       2,
+      "email",
+      "Email must be a valid email address.",
+      false
+    ]),
+  /* record */Caml_chrome_debugger.record([
+      "id",
+      "field",
+      "message",
+      "valid"
+    ], [
+      3,
       "password",
       "Password is required.",
       false
@@ -125,24 +136,35 @@ function registerFormRulesReducer(state, action) {
 }
 
 function loginFormRulesReducer(state, action) {
-  if (action.tag) {
-    var match = true;
-    if (match) {
-      Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
-      return state;
-    } else {
-      Caml_array.caml_array_get(state, 1)[/* valid */3] = false;
-      return state;
-    }
-  } else {
-    var match$1 = true;
-    if (match$1) {
-      Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
-      return state;
-    } else {
-      Caml_array.caml_array_get(state, 0)[/* valid */3] = false;
-      return state;
-    }
+  switch (action.tag | 0) {
+    case 0 : 
+        var match = action[0].length !== 0;
+        if (match) {
+          Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
+          return state;
+        } else {
+          Caml_array.caml_array_get(state, 0)[/* valid */3] = false;
+          return state;
+        }
+    case 1 : 
+        var match$1 = validateEmail(action[0]);
+        if (match$1) {
+          Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
+          return state;
+        } else {
+          Caml_array.caml_array_get(state, 1)[/* valid */3] = false;
+          return state;
+        }
+    case 2 : 
+        var match$2 = action[0].length !== 0;
+        if (match$2) {
+          Caml_array.caml_array_get(state, 2)[/* valid */3] = true;
+          return state;
+        } else {
+          Caml_array.caml_array_get(state, 2)[/* valid */3] = false;
+          return state;
+        }
+    
   }
 }
 
@@ -152,8 +174,10 @@ function useValidation(formType) {
         var match = React.useReducer(loginFormRulesReducer, loginFormRules);
         var dispatch = match[1];
         var validate = function (param) {
-          Curry._1(dispatch, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 0, [param[/* email */1]]));
-          return Curry._1(dispatch, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 1, [param[/* password */2]]));
+          var email = param[/* email */1];
+          Curry._1(dispatch, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 0, [email]));
+          Curry._1(dispatch, /* EmailForLoginValid */Caml_chrome_debugger.variant("EmailForLoginValid", 1, [email]));
+          return Curry._1(dispatch, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 2, [param[/* password */2]]));
         };
         return /* tuple */[
                 match[0],
@@ -166,7 +190,7 @@ function useValidation(formType) {
           var email = param[/* email */1];
           Curry._1(dispatch$1, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [param[/* username */0]]));
           Curry._1(dispatch$1, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [email]));
-          Curry._1(dispatch$1, /* EmailValid */Caml_chrome_debugger.variant("EmailValid", 2, [email]));
+          Curry._1(dispatch$1, /* EmailForRegistrationValid */Caml_chrome_debugger.variant("EmailForRegistrationValid", 2, [email]));
           return Curry._1(dispatch$1, /* PasswordLongEnough */Caml_chrome_debugger.variant("PasswordLongEnough", 3, [param[/* password */2]]));
         };
         return /* tuple */[
