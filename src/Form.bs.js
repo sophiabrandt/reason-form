@@ -74,17 +74,13 @@ function useForm(formType, callback) {
   var dispatch = match$2[1];
   var state = match$2[0];
   React.useEffect((function () {
-          Curry._1(validate, state);
           if (valid) {
             Curry._1(callback, /* () */0);
             Curry._1(dispatch, /* ResetState */0);
             return undefined;
           }
           
-        }), /* tuple */[
-        formRules,
-        validate
-      ]);
+        }), /* array */[valid]);
   var handleChange = function (evt) {
     evt.persist();
     var match = evt.target.name;

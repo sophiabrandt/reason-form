@@ -28,18 +28,16 @@ let useForm = (~formType, ~callback) => {
   let (valid, setIsValid) = React.useState(() => false);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
-  React.useEffect2(
-    () => {
-      validate(~formData=state);
+  React.useEffect1(
+    () =>
       valid ?
         {
           callback();
           dispatch(ResetState);
           None;
         } :
-        None;
-    },
-    (formRules, validate),
+        None,
+    [|valid|],
   );
 
   let allValid = (~formRules) =>
