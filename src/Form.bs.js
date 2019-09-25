@@ -74,6 +74,7 @@ function useForm(formType, callback) {
   var dispatch = match$2[1];
   var state = match$2[0];
   React.useEffect((function () {
+          Curry._1(validate, state);
           if (valid) {
             Curry._1(callback, /* () */0);
             Curry._1(dispatch, /* ResetState */0);
@@ -82,28 +83,25 @@ function useForm(formType, callback) {
           
         }), /* tuple */[
         formRules,
-        valid
+        validate
       ]);
   var handleChange = function (evt) {
     evt.persist();
     var match = evt.target.name;
     switch (match) {
       case "email" : 
-          Curry._1(dispatch, /* SetEmail */Caml_chrome_debugger.variant("SetEmail", 1, [evt.target.value]));
-          break;
+          return Curry._1(dispatch, /* SetEmail */Caml_chrome_debugger.variant("SetEmail", 1, [evt.target.value]));
       case "password" : 
-          Curry._1(dispatch, /* SetPassword */Caml_chrome_debugger.variant("SetPassword", 2, [evt.target.value]));
-          break;
+          return Curry._1(dispatch, /* SetPassword */Caml_chrome_debugger.variant("SetPassword", 2, [evt.target.value]));
       case "username" : 
-          Curry._1(dispatch, /* SetUsername */Caml_chrome_debugger.variant("SetUsername", 0, [evt.target.value]));
-          break;
+          return Curry._1(dispatch, /* SetUsername */Caml_chrome_debugger.variant("SetUsername", 0, [evt.target.value]));
       default:
-        
+        return /* () */0;
     }
-    return Curry._1(validate, state);
   };
   var handleSubmit = function (evt) {
     evt.preventDefault();
+    Curry._1(validate, state);
     return Curry._1(setIsValid, (function (param) {
                   return Belt_Array.every(formRules, (function (rule) {
                                 return rule[/* valid */3];
