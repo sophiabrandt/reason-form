@@ -96,7 +96,7 @@ let loginFormRulesReducer =
     (state: FormTypes.formRules, action: loginFormRulesAction) =>
   switch (action) {
   | EmailRequired(email) =>
-    email |> String.length > 0 ?
+    email |> String.length >= 0 ?
       {
         state[0].valid = true;
         state;
@@ -106,7 +106,7 @@ let loginFormRulesReducer =
         state;
       }
   | PasswordRequired(password) =>
-    password |> String.length > 0 ?
+    password |> String.length >= 0 ?
       {
         state[1].valid = true;
         state;

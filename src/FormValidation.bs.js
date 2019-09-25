@@ -126,7 +126,7 @@ function registerFormRulesReducer(state, action) {
 
 function loginFormRulesReducer(state, action) {
   if (action.tag) {
-    var match = action[0].length !== 0;
+    var match = true;
     if (match) {
       Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
       return state;
@@ -135,7 +135,7 @@ function loginFormRulesReducer(state, action) {
       return state;
     }
   } else {
-    var match$1 = action[0].length !== 0;
+    var match$1 = true;
     if (match$1) {
       Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
       return state;
