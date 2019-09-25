@@ -108,11 +108,11 @@ let loginFormRulesReducer =
   | PasswordRequired(password) =>
     password |> String.length > 0 ?
       {
-        state[2].valid = true;
+        state[1].valid = true;
         state;
       } :
       {
-        state[2].valid = false;
+        state[1].valid = false;
         state;
       }
   };

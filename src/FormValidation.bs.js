@@ -128,10 +128,10 @@ function loginFormRulesReducer(state, action) {
   if (action.tag) {
     var match = action[0].length !== 0;
     if (match) {
-      Caml_array.caml_array_get(state, 2)[/* valid */3] = true;
+      Caml_array.caml_array_get(state, 1)[/* valid */3] = true;
       return state;
     } else {
-      Caml_array.caml_array_get(state, 2)[/* valid */3] = false;
+      Caml_array.caml_array_get(state, 1)[/* valid */3] = false;
       return state;
     }
   } else {
