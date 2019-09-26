@@ -26,18 +26,22 @@ let useForm = (~formType, ~callback) => {
 
   let (formRules, validate) = FormValidation.useValidation(~formType);
   let (valid, setIsValid) = React.useState(() => false);
+  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (state, dispatch) = React.useReducer(reducer, initialState);
 
   React.useEffect1(
     () =>
-      valid ?
+      isSubmitting ?
         {
           callback();
           dispatch(ResetState);
           None;
         } :
-        None,
-    [|valid|],
+        {
+          setIsSubmitting(_ => false);
+          None;
+        },
+    [|isSubmitting|],
   );
 
   let allValid = (~formRules) =>
@@ -51,12 +55,13 @@ let useForm = (~formType, ~callback) => {
     | "password" => valueFromEvent(evt)->SetPassword |> dispatch
     | _ => ()
     };
+    validate(~formData=state);
+    setIsValid(_ => allValid(~formRules));
   };
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
-    validate(~formData=state);
-    setIsValid(_ => allValid(~formRules));
+    valid ? setIsSubmitting(_ => true) : setIsSubmitting(_ => false);
   };
 
   (state, formRules, handleChange, handleSubmit);
