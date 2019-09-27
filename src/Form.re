@@ -52,8 +52,13 @@ let useForm = (~formType, ~callback) => {
     | "password" => valueFromEvent(evt)->SetPassword |> dispatch
     | _ => ()
     };
-    validate(~formData=state);
+    Js.log(formRules);
   };
+
+  React.useEffect(() => {
+    validate(~formData=state);
+    None;
+  });
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);

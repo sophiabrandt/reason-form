@@ -64,6 +64,7 @@ function useForm(formType, callback) {
   var match = FormValidation$ReactHooksTemplate.useValidation(formType);
   var allValid = match[2];
   var validate = match[1];
+  var formRules = match[0];
   var match$1 = React.useState((function () {
           return false;
         }));
@@ -104,8 +105,13 @@ function useForm(formType, callback) {
       default:
         
     }
-    return Curry._1(validate, state);
+    console.log(formRules);
+    return /* () */0;
   };
+  React.useEffect((function () {
+          Curry._1(validate, state);
+          return undefined;
+        }));
   var handleSubmit = function (evt) {
     evt.preventDefault();
     return Curry._1(setIsSubmitting, (function (param) {
@@ -114,7 +120,7 @@ function useForm(formType, callback) {
   };
   return /* tuple */[
           state,
-          match[0],
+          formRules,
           handleChange,
           handleSubmit
         ];
