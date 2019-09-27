@@ -6,6 +6,10 @@ import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
+function str(prim) {
+  return prim;
+}
+
 var registerFormRules = /* array */[
   /* record */Caml_chrome_debugger.record([
       "id",
@@ -103,9 +107,7 @@ function areAllRulesValid(formRules) {
 function registerFormRulesReducer(state, action) {
   switch (action.tag | 0) {
     case 0 : 
-        var username = action[0];
-        console.log(username);
-        var match = username.length >= 4;
+        var match = action[0].length >= 4;
         if (match) {
           Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
           return state;
@@ -229,7 +231,118 @@ function useValidation(formType) {
   }
 }
 
+var initialState = /* record */Caml_chrome_debugger.record([
+    "username",
+    "email",
+    "password"
+  ], [
+    "",
+    "",
+    ""
+  ]);
+
+function formReducer(state, action) {
+  if (typeof action === "number") {
+    return initialState;
+  } else {
+    switch (action.tag | 0) {
+      case 0 : 
+          return /* record */Caml_chrome_debugger.record([
+                    "username",
+                    "email",
+                    "password"
+                  ], [
+                    action[0],
+                    state[/* email */1],
+                    state[/* password */2]
+                  ]);
+      case 1 : 
+          return /* record */Caml_chrome_debugger.record([
+                    "username",
+                    "email",
+                    "password"
+                  ], [
+                    state[/* username */0],
+                    action[0],
+                    state[/* password */2]
+                  ]);
+      case 2 : 
+          return /* record */Caml_chrome_debugger.record([
+                    "username",
+                    "email",
+                    "password"
+                  ], [
+                    state[/* username */0],
+                    state[/* email */1],
+                    action[0]
+                  ]);
+      
+    }
+  }
+}
+
+function useForm(formType, callback) {
+  var match = useValidation(formType);
+  var allValid = match[2];
+  var validate = match[1];
+  var match$1 = React.useState((function () {
+          return false;
+        }));
+  var setIsSubmitting = match$1[1];
+  var isSubmitting = match$1[0];
+  var match$2 = React.useReducer(formReducer, initialState);
+  var dispatch = match$2[1];
+  var state = match$2[0];
+  React.useEffect((function () {
+          var match = isSubmitting && allValid;
+          if (match) {
+            Curry._1(callback, /* () */0);
+            Curry._1(dispatch, /* ResetState */0);
+            return undefined;
+          } else {
+            Curry._1(setIsSubmitting, (function (param) {
+                    return false;
+                  }));
+            return undefined;
+          }
+        }), /* tuple */[
+        isSubmitting,
+        allValid
+      ]);
+  var handleChange = function (evt) {
+    evt.persist();
+    var match = evt.target.name;
+    switch (match) {
+      case "email" : 
+          return Curry._1(dispatch, /* SetEmail */Caml_chrome_debugger.variant("SetEmail", 1, [evt.target.value]));
+      case "password" : 
+          return Curry._1(dispatch, /* SetPassword */Caml_chrome_debugger.variant("SetPassword", 2, [evt.target.value]));
+      case "username" : 
+          return Curry._1(dispatch, /* SetUsername */Caml_chrome_debugger.variant("SetUsername", 0, [evt.target.value]));
+      default:
+        return /* () */0;
+    }
+  };
+  React.useEffect((function () {
+          Curry._1(validate, state);
+          return undefined;
+        }));
+  var handleSubmit = function (evt) {
+    evt.preventDefault();
+    return Curry._1(setIsSubmitting, (function (param) {
+                  return true;
+                }));
+  };
+  return /* tuple */[
+          state,
+          match[0],
+          handleChange,
+          handleSubmit
+        ];
+}
+
 export {
+  str ,
   registerFormRules ,
   loginFormRules ,
   validateEmail ,
@@ -237,6 +350,9 @@ export {
   registerFormRulesReducer ,
   loginFormRulesReducer ,
   useValidation ,
+  initialState ,
+  formReducer ,
+  useForm ,
   
 }
 /* react Not a pure module */

@@ -1,3 +1,5 @@
+let str = ReasonReact.string;
+
 let registerFormRules: FormTypes.formRules = [|
   {
     id: 1,
@@ -61,7 +63,6 @@ let registerFormRulesReducer =
     (state: FormTypes.formRules, action: registerFormRulesAction) =>
   switch (action) {
   | UsernameLongEnough(username) =>
-    Js.log(username);
     username |> String.length >= 4 ?
       {
         state[0].valid = true;
@@ -70,7 +71,7 @@ let registerFormRulesReducer =
       {
         state[0].valid = false;
         state;
-      };
+      }
   | EmailLongEnough(email) =>
     email |> String.length >= 4 ?
       {
@@ -168,3 +169,68 @@ let useValidation = (~formType) =>
     let allValid = false;
     (state, validate, allValid);
   };
+let initialState: FormTypes.formState = {
+  username: "",
+  email: "",
+  password: "",
+};
+
+type formAction =
+  | SetUsername(string)
+  | SetEmail(string)
+  | SetPassword(string)
+  | ResetState;
+
+let formReducer = (state: FormTypes.formState, action: formAction) =>
+  switch (action) {
+  | SetUsername(username) => {...state, username}
+  | SetEmail(email) => {...state, email}
+  | SetPassword(password) => {...state, password}
+  | ResetState => initialState
+  };
+
+let useForm = (~formType, ~callback) => {
+  let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
+  let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
+
+  let (formRules, validate, allValid) = useValidation(~formType);
+  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
+  let (state, dispatch) = React.useReducer(formReducer, initialState);
+
+  React.useEffect2(
+    () =>
+      isSubmitting && allValid ?
+        {
+          callback();
+          dispatch(ResetState);
+          None;
+        } :
+        {
+          setIsSubmitting(_ => false);
+          None;
+        },
+    (isSubmitting, allValid),
+  );
+
+  let handleChange = evt => {
+    ReactEvent.Form.persist(evt);
+    switch (nameFromEvent(evt)) {
+    | "username" => valueFromEvent(evt)->SetUsername |> dispatch
+    | "email" => valueFromEvent(evt)->SetEmail |> dispatch
+    | "password" => valueFromEvent(evt)->SetPassword |> dispatch
+    | _ => ()
+    };
+  };
+
+  React.useEffect(() => {
+    validate(~formData=state);
+    None;
+  });
+
+  let handleSubmit = evt => {
+    ReactEvent.Form.preventDefault(evt);
+    setIsSubmitting(_ => true);
+  };
+
+  (state, formRules, handleChange, handleSubmit);
+};

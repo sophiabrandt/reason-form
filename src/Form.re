@@ -1,73 +1,5 @@
 let str = ReasonReact.string;
 
-let initialState: FormTypes.formState = {
-  username: "",
-  email: "",
-  password: "",
-};
-
-type action =
-  | SetUsername(string)
-  | SetEmail(string)
-  | SetPassword(string)
-  | ResetState;
-
-let reducer = (state: FormTypes.formState, action) =>
-  switch (action) {
-  | SetUsername(username) => {...state, username}
-  | SetEmail(email) => {...state, email}
-  | SetPassword(password) => {...state, password}
-  | ResetState => initialState
-  };
-
-let useForm = (~formType, ~callback) => {
-  let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
-  let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
-
-  let (formRules, validate, allValid) =
-    FormValidation.useValidation(~formType);
-  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
-  let (state, dispatch) = React.useReducer(reducer, initialState);
-
-  React.useEffect2(
-    () =>
-      isSubmitting && allValid ?
-        {
-          callback();
-          dispatch(ResetState);
-          None;
-        } :
-        {
-          setIsSubmitting(_ => false);
-          None;
-        },
-    (isSubmitting, allValid),
-  );
-
-  let handleChange = evt => {
-    ReactEvent.Form.persist(evt);
-    switch (nameFromEvent(evt)) {
-    | "username" => valueFromEvent(evt)->SetUsername |> dispatch
-    | "email" => valueFromEvent(evt)->SetEmail |> dispatch
-    | "password" => valueFromEvent(evt)->SetPassword |> dispatch
-    | _ => ()
-    };
-    Js.log(formRules);
-  };
-
-  React.useEffect(() => {
-    validate(~formData=state);
-    None;
-  });
-
-  let handleSubmit = evt => {
-    ReactEvent.Form.preventDefault(evt);
-    setIsSubmitting(_ => true);
-  };
-
-  (state, formRules, handleChange, handleSubmit);
-};
-
 module FormErrors = {
   [@react.component]
   let make = (~formRules: FormTypes.formRules) =>
@@ -99,7 +31,7 @@ let make = (~formType) => {
   let logger = () => Js.log("Form submitted");
 
   let (state, formRules, handleChange, handleSubmit) =
-    useForm(~formType, ~callback=logger);
+    UseForm.useForm(~formType, ~callback=logger);
 
   <div className="section is-fullheight">
     <div className="container">
