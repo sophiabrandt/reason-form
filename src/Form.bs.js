@@ -3,7 +3,6 @@
 import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
-import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 import * as FormValidation$ReactHooksTemplate from "./FormValidation.bs.js";
 
@@ -63,23 +62,19 @@ function reducer(state, action) {
 
 function useForm(formType, callback) {
   var match = FormValidation$ReactHooksTemplate.useValidation(formType);
+  var allValid = match[2];
   var validate = match[1];
-  var formRules = match[0];
   var match$1 = React.useState((function () {
           return false;
         }));
-  var setIsValid = match$1[1];
-  var valid = match$1[0];
-  var match$2 = React.useState((function () {
-          return false;
-        }));
-  var setIsSubmitting = match$2[1];
-  var isSubmitting = match$2[0];
-  var match$3 = React.useReducer(reducer, initialState);
-  var dispatch = match$3[1];
-  var state = match$3[0];
+  var setIsSubmitting = match$1[1];
+  var isSubmitting = match$1[0];
+  var match$2 = React.useReducer(reducer, initialState);
+  var dispatch = match$2[1];
+  var state = match$2[0];
   React.useEffect((function () {
-          if (isSubmitting) {
+          var match = isSubmitting && allValid;
+          if (match) {
             Curry._1(callback, /* () */0);
             Curry._1(dispatch, /* ResetState */0);
             return undefined;
@@ -89,7 +84,10 @@ function useForm(formType, callback) {
                   }));
             return undefined;
           }
-        }), /* array */[isSubmitting]);
+        }), /* tuple */[
+        isSubmitting,
+        allValid
+      ]);
   var handleChange = function (evt) {
     evt.persist();
     var match = evt.target.name;
@@ -106,28 +104,17 @@ function useForm(formType, callback) {
       default:
         
     }
-    Curry._1(validate, state);
-    return Curry._1(setIsValid, (function (param) {
-                  return Belt_Array.every(formRules, (function (rule) {
-                                return rule[/* valid */3];
-                              }));
-                }));
+    return Curry._1(validate, state);
   };
   var handleSubmit = function (evt) {
     evt.preventDefault();
-    if (valid) {
-      return Curry._1(setIsSubmitting, (function (param) {
-                    return true;
-                  }));
-    } else {
-      return Curry._1(setIsSubmitting, (function (param) {
-                    return false;
-                  }));
-    }
+    return Curry._1(setIsSubmitting, (function (param) {
+                  return true;
+                }));
   };
   return /* tuple */[
           state,
-          formRules,
+          match[0],
           handleChange,
           handleSubmit
         ];

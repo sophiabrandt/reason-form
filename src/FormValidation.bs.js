@@ -2,6 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
@@ -93,10 +94,18 @@ function validateEmail(email) {
   return re.test(email);
 }
 
+function areAllRulesValid(formRules) {
+  return Belt_Array.every(formRules, (function (rule) {
+                return rule[/* valid */3];
+              }));
+}
+
 function registerFormRulesReducer(state, action) {
   switch (action.tag | 0) {
     case 0 : 
-        var match = action[0].length >= 4;
+        var username = action[0];
+        console.log(username);
+        var match = username.length >= 4;
         if (match) {
           Caml_array.caml_array_get(state, 0)[/* valid */3] = true;
           return state;
@@ -173,19 +182,25 @@ function useValidation(formType) {
     case "login" : 
         var match = React.useReducer(loginFormRulesReducer, loginFormRules);
         var dispatch = match[1];
+        var state = match[0];
         var validate = function (param) {
           var email = param[/* email */1];
           Curry._1(dispatch, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 0, [email]));
           Curry._1(dispatch, /* EmailForLoginValid */Caml_chrome_debugger.variant("EmailForLoginValid", 1, [email]));
           return Curry._1(dispatch, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 2, [param[/* password */2]]));
         };
+        var allValid = Belt_Array.every(state, (function (rule) {
+                return rule[/* valid */3];
+              }));
         return /* tuple */[
-                match[0],
-                validate
+                state,
+                validate,
+                allValid
               ];
     case "register" : 
         var match$1 = React.useReducer(registerFormRulesReducer, registerFormRules);
         var dispatch$1 = match$1[1];
+        var state$1 = match$1[0];
         var validate$1 = function (param) {
           var email = param[/* email */1];
           Curry._1(dispatch$1, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [param[/* username */0]]));
@@ -193,18 +208,23 @@ function useValidation(formType) {
           Curry._1(dispatch$1, /* EmailForRegistrationValid */Caml_chrome_debugger.variant("EmailForRegistrationValid", 2, [email]));
           return Curry._1(dispatch$1, /* PasswordLongEnough */Caml_chrome_debugger.variant("PasswordLongEnough", 3, [param[/* password */2]]));
         };
+        var allValid$1 = Belt_Array.every(state$1, (function (rule) {
+                return rule[/* valid */3];
+              }));
         return /* tuple */[
-                match$1[0],
-                validate$1
+                state$1,
+                validate$1,
+                allValid$1
               ];
     default:
-      var state = /* array */[];
+      var state$2 = /* array */[];
       var validate$2 = function (param) {
         return /* () */0;
       };
       return /* tuple */[
-              state,
-              validate$2
+              state$2,
+              validate$2,
+              false
             ];
   }
 }
@@ -213,6 +233,7 @@ export {
   registerFormRules ,
   loginFormRules ,
   validateEmail ,
+  areAllRulesValid ,
   registerFormRulesReducer ,
   loginFormRulesReducer ,
   useValidation ,

@@ -43,6 +43,9 @@ let validateEmail = email => {
   email |> Js.Re.test_(re);
 };
 
+let areAllRulesValid = (~formRules) =>
+  Belt.Array.every(formRules, rule => rule.FormTypes.valid);
+
 type registerFormRulesAction =
   | UsernameLongEnough(string)
   | EmailLongEnough(string)
@@ -58,6 +61,7 @@ let registerFormRulesReducer =
     (state: FormTypes.formRules, action: registerFormRulesAction) =>
   switch (action) {
   | UsernameLongEnough(username) =>
+    Js.log(username);
     username |> String.length >= 4 ?
       {
         state[0].valid = true;
@@ -66,7 +70,7 @@ let registerFormRulesReducer =
       {
         state[0].valid = false;
         state;
-      }
+      };
   | EmailLongEnough(email) =>
     email |> String.length >= 4 ?
       {
@@ -146,7 +150,8 @@ let useValidation = (~formType) =>
       email->EmailForRegistrationValid |> dispatch;
       password->PasswordLongEnough |> dispatch;
     };
-    (state, validate);
+    let allValid = areAllRulesValid(state);
+    (state, validate, allValid);
   | "login" =>
     let (state, dispatch) =
       React.useReducer(loginFormRulesReducer, loginFormRules);
@@ -155,9 +160,11 @@ let useValidation = (~formType) =>
       email->EmailForLoginValid |> dispatch;
       password->PasswordRequired |> dispatch;
     };
-    (state, validate);
+    let allValid = areAllRulesValid(state);
+    (state, validate, allValid);
   | _ =>
     let state: FormTypes.formRules = [||];
     let validate = (~formData as _: FormTypes.formState) => ();
-    (state, validate);
+    let allValid = false;
+    (state, validate, allValid);
   };
