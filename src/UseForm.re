@@ -1,4 +1,11 @@
+[%%debugger.chrome%];
 let str = ReasonReact.string;
+
+let initialFormData: FormTypes.formState = {
+  username: "",
+  email: "",
+  password: "",
+};
 
 let registerFormRules: FormTypes.formRules = [|
   {
@@ -63,7 +70,7 @@ let registerFormRulesReducer =
     (state: FormTypes.formRules, action: registerFormRulesAction) =>
   switch (action) {
   | UsernameLongEnough(username) =>
-    username |> String.length >= 4 ?
+    username |> String.length >= 5 ?
       {
         state[0].valid = true;
         state;
@@ -73,7 +80,7 @@ let registerFormRulesReducer =
         state;
       }
   | EmailLongEnough(email) =>
-    email |> String.length >= 4 ?
+    email |> String.length >= 5 ?
       {
         state[1].valid = true;
         state;
@@ -139,42 +146,6 @@ let loginFormRulesReducer =
       }
   };
 
-let useValidation = (~formType) =>
-  switch (formType) {
-  | "register" =>
-    let (state, dispatch) =
-      React.useReducer(registerFormRulesReducer, registerFormRules);
-    let validate =
-        (~formData as {username, email, password}: FormTypes.formState) => {
-      username->UsernameLongEnough |> dispatch;
-      email->EmailLongEnough |> dispatch;
-      email->EmailForRegistrationValid |> dispatch;
-      password->PasswordLongEnough |> dispatch;
-    };
-    let allValid = areAllRulesValid(state);
-    (state, validate, allValid);
-  | "login" =>
-    let (state, dispatch) =
-      React.useReducer(loginFormRulesReducer, loginFormRules);
-    let validate = (~formData as {email, password}: FormTypes.formState) => {
-      email->EmailRequired |> dispatch;
-      email->EmailForLoginValid |> dispatch;
-      password->PasswordRequired |> dispatch;
-    };
-    let allValid = areAllRulesValid(state);
-    (state, validate, allValid);
-  | _ =>
-    let state: FormTypes.formRules = [||];
-    let validate = (~formData as _: FormTypes.formState) => ();
-    let allValid = false;
-    (state, validate, allValid);
-  };
-let initialState: FormTypes.formState = {
-  username: "",
-  email: "",
-  password: "",
-};
-
 type formAction =
   | SetUsername(string)
   | SetEmail(string)
@@ -186,31 +157,33 @@ let formReducer = (state: FormTypes.formState, action: formAction) =>
   | SetUsername(username) => {...state, username}
   | SetEmail(email) => {...state, email}
   | SetPassword(password) => {...state, password}
-  | ResetState => initialState
+  | ResetState => initialFormData
   };
 
 let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
-  let (formRules, validate, allValid) = useValidation(~formType);
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
-  let (state, dispatch) = React.useReducer(formReducer, initialState);
+  let (allValid, setAllValid) = React.useState(() => false);
+  let (formData, dispatch) = React.useReducer(formReducer, initialFormData);
+  let (formRules, dispatchFormRules) =
+    React.useReducer(registerFormRulesReducer, registerFormRules);
 
-  React.useEffect2(
-    () =>
-      isSubmitting && allValid ?
-        {
-          callback();
-          dispatch(ResetState);
-          None;
-        } :
-        {
-          setIsSubmitting(_ => false);
-          None;
-        },
-    (isSubmitting, allValid),
-  );
+  let validate = (~formData=formData, ()) =>
+    switch (formType) {
+    | "register" =>
+      formData.username->UsernameLongEnough |> dispatchFormRules;
+      formData.email->EmailLongEnough |> dispatchFormRules;
+      formData.email->EmailForRegistrationValid |> dispatchFormRules;
+      formData.password->PasswordLongEnough |> dispatchFormRules;
+    | "login" =>
+      /* formData.email->EmailRequired |> dispatchFormRules; */
+      /* formData.email->EmailForLoginValid |> dispatchFormRules; */
+      /* formData.password->PasswordRequired |> dispatchFormRules; */
+      ()
+    | _ => ()
+    };
 
   let handleChange = evt => {
     ReactEvent.Form.persist(evt);
@@ -222,15 +195,30 @@ let useForm = (~formType, ~callback) => {
     };
   };
 
-  React.useEffect(() => {
-    validate(~formData=state);
-    None;
-  });
+  React.useEffect2(
+    () => {
+      validate(~formData, ());
+      Js.log(formData);
+      allValid && isSubmitting ?
+        {
+          callback();
+          dispatch(ResetState);
+          setIsSubmitting(_ => false);
+          None;
+        } :
+        {
+          setIsSubmitting(_ => false);
+          None;
+        };
+    },
+    (formData, allValid),
+  );
 
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
+    setAllValid(_ => areAllRulesValid(~formRules));
     setIsSubmitting(_ => true);
   };
 
-  (state, formRules, handleChange, handleSubmit);
+  (formData, formRules, handleChange, handleSubmit);
 };
