@@ -99,7 +99,7 @@ let registerFormRulesReducer =
         state;
       }
   | PasswordLongEnough(password) =>
-    password |> String.length >= 9 ?
+    password |> String.length >= 10 ?
       {
         state[3].valid = true;
         state;
@@ -203,9 +203,16 @@ let useForm = (~formType, ~callback) => {
     };
   };
 
-  React.useEffect2(
+  React.useEffect1(
     () => {
       validate(~formData, ());
+      None;
+    },
+    [|formData|],
+  );
+
+  React.useEffect2(
+    () =>
       allValid && isSubmitting ?
         {
           callback();
@@ -216,9 +223,8 @@ let useForm = (~formType, ~callback) => {
         {
           setIsSubmitting(_ => false);
           None;
-        };
-    },
-    (formData, allValid),
+        },
+    (allValid, isSubmitting),
   );
 
   let handleSubmit = evt => {

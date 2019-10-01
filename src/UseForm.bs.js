@@ -140,7 +140,7 @@ function registerFormRulesReducer(state, action) {
           return state;
         }
     case 3 : 
-        var match$3 = action[0].length >= 9;
+        var match$3 = action[0].length >= 10;
         if (match$3) {
           Caml_array.caml_array_get(state, 3)[/* valid */3] = true;
           return state;
@@ -286,6 +286,9 @@ function useForm(formType, callback) {
   };
   React.useEffect((function () {
           validate(formData, /* () */0);
+          return undefined;
+        }), /* array */[formData]);
+  React.useEffect((function () {
           var match = allValid && isSubmitting;
           if (match) {
             Curry._1(callback, /* () */0);
@@ -301,8 +304,8 @@ function useForm(formType, callback) {
             return undefined;
           }
         }), /* tuple */[
-        formData,
-        allValid
+        allValid,
+        isSubmitting
       ]);
   var handleSubmit = function (evt) {
     evt.preventDefault();
