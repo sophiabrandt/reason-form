@@ -6,10 +6,6 @@ import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
-function str(prim) {
-  return prim;
-}
-
 var initialFormData = /* record */Caml_chrome_debugger.record([
     "username",
     "email",
@@ -244,18 +240,32 @@ function useForm(formType, callback) {
   var dispatch = match$2[1];
   var formData = match$2[0];
   var match$3 = React.useReducer(registerFormRulesReducer, registerFormRules);
-  var dispatchFormRules = match$3[1];
-  var formRules = match$3[0];
+  var dispatchRegisterFormRules = match$3[1];
+  var match$4 = React.useReducer(loginFormRulesReducer, loginFormRules);
+  var dispatchLoginFormRules = match$4[1];
+  var formRules;
+  switch (formType) {
+    case "login" : 
+        formRules = match$4[0];
+        break;
+    case "register" : 
+        formRules = match$3[0];
+        break;
+    default:
+      formRules = /* array */[];
+  }
   var validate = function ($staropt$star, param) {
     var formData$1 = $staropt$star !== undefined ? $staropt$star : formData;
     switch (formType) {
       case "login" : 
-          return /* () */0;
+          Curry._1(dispatchLoginFormRules, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 0, [formData$1[/* email */1]]));
+          Curry._1(dispatchLoginFormRules, /* EmailForLoginValid */Caml_chrome_debugger.variant("EmailForLoginValid", 1, [formData$1[/* email */1]]));
+          return Curry._1(dispatchLoginFormRules, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 2, [formData$1[/* password */2]]));
       case "register" : 
-          Curry._1(dispatchFormRules, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [formData$1[/* username */0]]));
-          Curry._1(dispatchFormRules, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [formData$1[/* email */1]]));
-          Curry._1(dispatchFormRules, /* EmailForRegistrationValid */Caml_chrome_debugger.variant("EmailForRegistrationValid", 2, [formData$1[/* email */1]]));
-          return Curry._1(dispatchFormRules, /* PasswordLongEnough */Caml_chrome_debugger.variant("PasswordLongEnough", 3, [formData$1[/* password */2]]));
+          Curry._1(dispatchRegisterFormRules, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [formData$1[/* username */0]]));
+          Curry._1(dispatchRegisterFormRules, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [formData$1[/* email */1]]));
+          Curry._1(dispatchRegisterFormRules, /* EmailForRegistrationValid */Caml_chrome_debugger.variant("EmailForRegistrationValid", 2, [formData$1[/* email */1]]));
+          return Curry._1(dispatchRegisterFormRules, /* PasswordLongEnough */Caml_chrome_debugger.variant("PasswordLongEnough", 3, [formData$1[/* password */2]]));
       default:
         return /* () */0;
     }
@@ -276,7 +286,6 @@ function useForm(formType, callback) {
   };
   React.useEffect((function () {
           validate(formData, /* () */0);
-          console.log(formData);
           var match = allValid && isSubmitting;
           if (match) {
             Curry._1(callback, /* () */0);
@@ -315,7 +324,6 @@ function useForm(formType, callback) {
 }
 
 export {
-  str ,
   initialFormData ,
   registerFormRules ,
   loginFormRules ,

@@ -1,5 +1,4 @@
-[%%debugger.chrome%];
-let str = ReasonReact.string;
+[%%debugger.chrome];
 
 let initialFormData: FormTypes.formState = {
   username: "",
@@ -167,21 +166,30 @@ let useForm = (~formType, ~callback) => {
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (allValid, setAllValid) = React.useState(() => false);
   let (formData, dispatch) = React.useReducer(formReducer, initialFormData);
-  let (formRules, dispatchFormRules) =
+
+  let (registerFormRules, dispatchRegisterFormRules) =
     React.useReducer(registerFormRulesReducer, registerFormRules);
+  let (loginFormRules, dispatchLoginFormRules) =
+    React.useReducer(loginFormRulesReducer, loginFormRules);
+
+  let formRules =
+    switch (formType) {
+    | "register" => registerFormRules
+    | "login" => loginFormRules
+    | _ => [||]
+    };
 
   let validate = (~formData=formData, ()) =>
     switch (formType) {
     | "register" =>
-      formData.username->UsernameLongEnough |> dispatchFormRules;
-      formData.email->EmailLongEnough |> dispatchFormRules;
-      formData.email->EmailForRegistrationValid |> dispatchFormRules;
-      formData.password->PasswordLongEnough |> dispatchFormRules;
+      formData.username->UsernameLongEnough |> dispatchRegisterFormRules;
+      formData.email->EmailLongEnough |> dispatchRegisterFormRules;
+      formData.email->EmailForRegistrationValid |> dispatchRegisterFormRules;
+      formData.password->PasswordLongEnough |> dispatchRegisterFormRules;
     | "login" =>
-      /* formData.email->EmailRequired |> dispatchFormRules; */
-      /* formData.email->EmailForLoginValid |> dispatchFormRules; */
-      /* formData.password->PasswordRequired |> dispatchFormRules; */
-      ()
+      formData.email->EmailRequired |> dispatchLoginFormRules;
+      formData.email->EmailForLoginValid |> dispatchLoginFormRules;
+      formData.password->PasswordRequired |> dispatchLoginFormRules;
     | _ => ()
     };
 
@@ -198,7 +206,6 @@ let useForm = (~formType, ~callback) => {
   React.useEffect2(
     () => {
       validate(~formData, ());
-      Js.log(formData);
       allValid && isSubmitting ?
         {
           callback();
