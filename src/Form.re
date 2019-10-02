@@ -1,57 +1,37 @@
 let str = ReasonReact.string;
 
-type state = {
-  username: string,
-  email: string,
-  password: string,
-};
-
-let initialState = {username: "", email: "", password: ""};
-
-type action =
-  | SetUsername(string)
-  | SetEmail(string)
-  | SetPassword(string)
-  | ResetState;
-
-let reducer = (state, action) =>
-  switch (action) {
-  | SetUsername(username) => {...state, username}
-  | SetEmail(email) => {...state, email}
-  | SetPassword(password) => {...state, password}
-  | ResetState => initialState
-  };
-
-let useForm = (~callback) => {
-  let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
-  let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
-
-  let (state, dispatch) = React.useReducer(reducer, initialState);
-
-  let handleChange = evt => {
-    ReactEvent.Form.persist(evt);
-    switch (nameFromEvent(evt)) {
-    | "username" => valueFromEvent(evt)->SetUsername |> dispatch
-    | "email" => valueFromEvent(evt)->SetEmail |> dispatch
-    | "password" => valueFromEvent(evt)->SetPassword |> dispatch
-    | _ => ()
-    };
-  };
-
-  let handleSubmit = evt => {
-    ReactEvent.Form.preventDefault(evt);
-    callback();
-    dispatch(ResetState);
-  };
-
-  (state, handleChange, handleSubmit);
+module FormErrors = {
+  [@react.component]
+  let make = (~formRules: FormTypes.formRules) =>
+    <div>
+      <ul>
+        {
+          Array.map(
+            rule =>
+              <li
+                key={rule.FormTypes.id |> string_of_int}
+                className={
+                  rule.valid ?
+                    "is-success help is-size-6" : "is-danger help is-size-6"
+                }>
+                <i className={rule.valid ? "fas fa-check" : "fas fa-times"} />
+                {" " |> str}
+                {rule.FormTypes.message |> str}
+              </li>,
+            formRules,
+          )
+          |> React.array
+        }
+      </ul>
+    </div>;
 };
 
 [@react.component]
 let make = (~formType) => {
   let logger = () => Js.log("Form submitted");
 
-  let (state, handleChange, handleSubmit) = useForm(~callback=logger);
+  let (state, formRules, handleChange, handleSubmit) =
+    UseForm.useForm(~formType, ~callback=logger);
 
   <div className="section is-fullheight">
     <div className="container">
@@ -59,6 +39,13 @@ let make = (~formType) => {
         <h1 className="is-size-1 has-text-centered is-capitalized">
           {formType |> str}
         </h1>
+        <br />
+        {
+          switch (formRules) {
+          | [||] => ReasonReact.null
+          | _ => <FormErrors formRules />
+          }
+        }
         <br />
         <div className="box">
           <form onSubmit=handleSubmit>
