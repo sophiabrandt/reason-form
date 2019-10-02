@@ -203,6 +203,12 @@ let useForm = (~formType, ~callback) => {
     };
   };
 
+  let handleSubmit = evt => {
+    ReactEvent.Form.preventDefault(evt);
+    setAllValid(_ => areAllRulesValid(~formRules));
+    setIsSubmitting(_ => true);
+  };
+
   React.useEffect1(
     () => {
       validate(~formData, ());
@@ -226,12 +232,6 @@ let useForm = (~formType, ~callback) => {
         },
     (allValid, isSubmitting),
   );
-
-  let handleSubmit = evt => {
-    ReactEvent.Form.preventDefault(evt);
-    setAllValid(_ => areAllRulesValid(~formRules));
-    setIsSubmitting(_ => true);
-  };
 
   (formData, formRules, handleChange, handleSubmit);
 };

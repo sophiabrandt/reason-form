@@ -284,6 +284,17 @@ function useForm(formType, callback) {
         return /* () */0;
     }
   };
+  var handleSubmit = function (evt) {
+    evt.preventDefault();
+    Curry._1(setAllValid, (function (param) {
+            return Belt_Array.every(formRules, (function (rule) {
+                          return rule[/* valid */3];
+                        }));
+          }));
+    return Curry._1(setIsSubmitting, (function (param) {
+                  return true;
+                }));
+  };
   React.useEffect((function () {
           validate(formData, /* () */0);
           return undefined;
@@ -307,17 +318,6 @@ function useForm(formType, callback) {
         allValid,
         isSubmitting
       ]);
-  var handleSubmit = function (evt) {
-    evt.preventDefault();
-    Curry._1(setAllValid, (function (param) {
-            return Belt_Array.every(formRules, (function (rule) {
-                          return rule[/* valid */3];
-                        }));
-          }));
-    return Curry._1(setIsSubmitting, (function (param) {
-                  return true;
-                }));
-  };
   return /* tuple */[
           formData,
           formRules,
