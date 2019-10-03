@@ -8,7 +8,7 @@ type formRule = {
   id: int,
   field: string,
   message: string,
-  mutable valid: bool,
+  valid: bool,
 };
 
 type formRules = array(formRule);
