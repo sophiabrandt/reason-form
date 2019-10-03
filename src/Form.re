@@ -100,6 +100,9 @@ let make = (~formType) => {
             </button>
           </form>
         </div>
+        <a href="/" className="is-size-4">
+          {{j|⬅️ Back to Homepage|j} |> str}
+        </a>
       </div>
     </div>
   </div>;

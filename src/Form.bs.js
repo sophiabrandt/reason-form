@@ -92,7 +92,10 @@ function Form(Props) {
                                         }))), React.createElement("button", {
                                   className: "button is-block is-info is-fullwidth is-uppercase",
                                   type: "submit"
-                                }, formType, React.createElement("br", undefined)))))));
+                                }, formType, React.createElement("br", undefined)))), React.createElement("a", {
+                          className: "is-size-4",
+                          href: "/"
+                        }, "⬅️ Back to Homepage"))));
 }
 
 var make = Form;
