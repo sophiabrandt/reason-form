@@ -1,5 +1,3 @@
-[%%debugger.chrome];
-
 let initialFormData: FormTypes.formState = {
   username: "",
   email: "",
