@@ -8,25 +8,25 @@ let initialFormData: FormTypes.formState = {
 
 let registerFormRules: FormTypes.formRules = [|
   {
-    id: 1,
+    id: 0,
     field: "username",
     message: "Username must have at least 5 characters.",
     valid: false,
   },
   {
-    id: 2,
+    id: 1,
     field: "email",
     message: "Email must have at least 5 characters.",
     valid: false,
   },
   {
-    id: 3,
+    id: 2,
     field: "email",
     message: "Email must be a valid email address.",
     valid: false,
   },
   {
-    id: 4,
+    id: 3,
     field: "password",
     message: "Password must have at least 10 characters.",
     valid: false,
@@ -34,14 +34,14 @@ let registerFormRules: FormTypes.formRules = [|
 |];
 
 let loginFormRules: FormTypes.formRules = [|
-  {id: 1, field: "email", message: "Email is required.", valid: false},
+  {id: 0, field: "email", message: "Email is required.", valid: false},
   {
-    id: 2,
+    id: 1,
     field: "email",
     message: "Email must be a valid email address.",
     valid: false,
   },
-  {id: 3, field: "password", message: "Password is required.", valid: false},
+  {id: 2, field: "password", message: "Password is required.", valid: false},
 |];
 
 let validateEmail = email => {
@@ -65,49 +65,33 @@ type loginFormRulesAction =
   | EmailForLoginValid(string)
   | PasswordRequired(string);
 
+let setRuleToValid = (rules: FormTypes.formRules, id) =>
+  Array.map(
+    rule => rule.FormTypes.id === id ? {...rule, valid: true} : rule,
+    rules,
+  );
+
+let setRuleToInvalid = (rules: FormTypes.formRules, id) =>
+  Array.map(
+    rule => rule.FormTypes.id === id ? {...rule, valid: false} : rule,
+    rules,
+  );
+
 let registerFormRulesReducer =
     (state: FormTypes.formRules, action: registerFormRulesAction) =>
   switch (action) {
   | UsernameLongEnough(username) =>
     username |> String.length >= 5 ?
-      {
-        state[0].valid = true;
-        state;
-      } :
-      {
-        state[0].valid = false;
-        state;
-      }
+      setRuleToValid(state, 0) : setRuleToInvalid(state, 0)
   | EmailLongEnough(email) =>
     email |> String.length >= 5 ?
-      {
-        state[1].valid = true;
-        state;
-      } :
-      {
-        state[1].valid = false;
-        state;
-      }
+      setRuleToValid(state, 1) : setRuleToInvalid(state, 1)
   | EmailForRegistrationValid(email) =>
     email |> validateEmail ?
-      {
-        state[2].valid = true;
-        state;
-      } :
-      {
-        state[2].valid = false;
-        state;
-      }
+      setRuleToValid(state, 2) : setRuleToInvalid(state, 2)
   | PasswordLongEnough(password) =>
     password |> String.length >= 10 ?
-      {
-        state[3].valid = true;
-        state;
-      } :
-      {
-        state[3].valid = false;
-        state;
-      }
+      setRuleToValid(state, 3) : setRuleToInvalid(state, 3)
   };
 
 let loginFormRulesReducer =
@@ -115,34 +99,13 @@ let loginFormRulesReducer =
   switch (action) {
   | EmailRequired(email) =>
     email |> String.length > 0 ?
-      {
-        state[0].valid = true;
-        state;
-      } :
-      {
-        state[0].valid = false;
-        state;
-      }
+      setRuleToValid(state, 0) : setRuleToInvalid(state, 0)
   | EmailForLoginValid(email) =>
     email |> validateEmail ?
-      {
-        state[1].valid = true;
-        state;
-      } :
-      {
-        state[1].valid = false;
-        state;
-      }
+      setRuleToValid(state, 1) : setRuleToInvalid(state, 1)
   | PasswordRequired(password) =>
     password |> String.length > 0 ?
-      {
-        state[2].valid = true;
-        state;
-      } :
-      {
-        state[2].valid = false;
-        state;
-      }
+      setRuleToValid(state, 2) : setRuleToInvalid(state, 2)
   };
 
 type formAction =
@@ -165,7 +128,8 @@ let useForm = (~formType, ~callback) => {
 
   let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (allValid, setAllValid) = React.useState(() => false);
-  let (formData, dispatch) = React.useReducer(formReducer, initialFormData);
+  let (formData, dispatchFormData) =
+    React.useReducer(formReducer, initialFormData);
 
   let (registerFormRules, dispatchRegisterFormRules) =
     React.useReducer(registerFormRulesReducer, registerFormRules);
@@ -196,9 +160,9 @@ let useForm = (~formType, ~callback) => {
   let handleChange = evt => {
     ReactEvent.Form.persist(evt);
     switch (nameFromEvent(evt)) {
-    | "username" => valueFromEvent(evt)->SetUsername |> dispatch
-    | "email" => valueFromEvent(evt)->SetEmail |> dispatch
-    | "password" => valueFromEvent(evt)->SetPassword |> dispatch
+    | "username" => valueFromEvent(evt)->SetUsername |> dispatchFormData
+    | "email" => valueFromEvent(evt)->SetEmail |> dispatchFormData
+    | "password" => valueFromEvent(evt)->SetPassword |> dispatchFormData
     | _ => ()
     };
   };
@@ -222,7 +186,7 @@ let useForm = (~formType, ~callback) => {
       allValid && isSubmitting ?
         {
           callback();
-          dispatch(ResetState);
+          dispatchFormData(ResetState);
           setIsSubmitting(_ => false);
           None;
         } :
