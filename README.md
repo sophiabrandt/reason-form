@@ -56,6 +56,7 @@ This repository follows my process of learning ReasonReact:
 - [Learning ReasonReact Step by Step Part: 2](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-2-3h20)
 - [Learning ReasonReact Step by Step Part: 3](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-3-2010)
 - [Learning ReasonReact Step by Step Part: 4](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-4-114h)
+- [Learning ReasonReact Step by Step Part: 5](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-5-m6l)
 
 ### Built With
 
@@ -105,6 +106,17 @@ git clone https://github.com/sophiabrandt/reason-form.git
 cd reason-form && yarn install
 ```
 
+4. Checkout commit
+
+If you want to see the basic form without validation:
+
+```sh
+git fetch && git fetch --tags
+git checkout finished-basic-form-with-dev-routing
+```
+
+Otherwise just use the master branch.
+
 <!-- USAGE EXAMPLES -->
 
 ## Usage
@@ -149,7 +161,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Sophia Brandt- [@hisophiabrandt](https://twitter.com/hisophiabrandt)
+Sophia Brandt - [@hisophiabrandt](https://twitter.com/hisophiabrandt)
 
 Project Link: [https://github.com/sophiabrandt/reason-form](https://github.com/sophiabrandt/reason-form)
 
