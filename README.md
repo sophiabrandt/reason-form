@@ -19,7 +19,7 @@
     <a href="https://github.com/sophiabrandt/reason-form"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/sophiabrandt/reason-form">View Demo</a>
+    <a href="https://reason-form.firebaseapp.com">View Demo</a>
     ·
     <a href="https://github.com/sophiabrandt/reason-form/issues">Report Bug</a>
     ·
@@ -48,6 +48,8 @@
 ## About The Project
 
 > Build a form with ReasonReact and React hooks
+
+**☞ [View Demo](https://reason-form.firebaseapp.com)**
 
 This repository follows my process of learning ReasonReact:
 
