@@ -42,7 +42,7 @@ let loginFormRules: FormTypes.formRules = [|
   {id: 2, field: "password", message: "Password is required.", valid: false},
 |];
 
-let validateEmail = email => {
+let validEmail = email => {
   let re = [%bs.re
     "/^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/"
   ];
@@ -85,7 +85,7 @@ let registerFormRulesReducer =
     email |> String.length >= 5 ?
       setRuleToValid(state, 1) : setRuleToInvalid(state, 1)
   | EmailForRegistrationValid(email) =>
-    email |> validateEmail ?
+    email |> validEmail ?
       setRuleToValid(state, 2) : setRuleToInvalid(state, 2)
   | PasswordLongEnough(password) =>
     password |> String.length >= 10 ?
@@ -99,7 +99,7 @@ let loginFormRulesReducer =
     email |> String.length > 0 ?
       setRuleToValid(state, 0) : setRuleToInvalid(state, 0)
   | EmailForLoginValid(email) =>
-    email |> validateEmail ?
+    email |> validEmail ?
       setRuleToValid(state, 1) : setRuleToInvalid(state, 1)
   | PasswordRequired(password) =>
     password |> String.length > 0 ?

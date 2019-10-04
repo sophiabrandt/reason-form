@@ -99,7 +99,7 @@ var loginFormRules = /* array */[
     ])
 ];
 
-function validateEmail(email) {
+function validEmail(email) {
   var re = (/^(([^<>()\[\]\.,;:\s@']+(\.[^<>()\[\]\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
   return re.test(email);
 }
@@ -169,7 +169,7 @@ function registerFormRulesReducer(state, action) {
           return setRuleToInvalid(state, 1);
         }
     case 2 : 
-        var match$2 = validateEmail(action[0]);
+        var match$2 = validEmail(action[0]);
         if (match$2) {
           return setRuleToValid(state, 2);
         } else {
@@ -196,7 +196,7 @@ function loginFormRulesReducer(state, action) {
           return setRuleToInvalid(state, 0);
         }
     case 1 : 
-        var match$1 = validateEmail(action[0]);
+        var match$1 = validEmail(action[0]);
         if (match$1) {
           return setRuleToValid(state, 1);
         } else {
@@ -358,7 +358,7 @@ export {
   initialFormData ,
   registerFormRules ,
   loginFormRules ,
-  validateEmail ,
+  validEmail ,
   areAllRulesValid ,
   setRuleToValid ,
   setRuleToInvalid ,
