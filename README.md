@@ -59,6 +59,8 @@ This repository follows my process of learning ReasonReact:
 - [Learning ReasonReact Step by Step Part: 3](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-3-2010)
 - [Learning ReasonReact Step by Step Part: 4](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-4-114h)
 - [Learning ReasonReact Step by Step Part: 5](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-5-m6l)
+- [Learning ReasonReact Step by Step Part: 6](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-6-2mim)
+- [Learning ReasonReact Step by Step Part: 7](https://dev.to/sophiabrandt/learning-reasonreact-step-by-step-part-7-12fg)
 
 ### Built With
 
