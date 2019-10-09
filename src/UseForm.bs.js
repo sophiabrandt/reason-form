@@ -257,27 +257,22 @@ function useForm(formType, callback) {
   var match = React.useState((function () {
           return false;
         }));
-  var setIsSubmitting = match[1];
-  var isSubmitting = match[0];
-  var match$1 = React.useState((function () {
-          return false;
-        }));
-  var setAllValid = match$1[1];
-  var allValid = match$1[0];
-  var match$2 = React.useReducer(formReducer, initialFormData);
-  var dispatchFormData = match$2[1];
-  var formData = match$2[0];
-  var match$3 = React.useReducer(registerFormRulesReducer, registerFormRules);
-  var dispatchRegisterFormRules = match$3[1];
-  var match$4 = React.useReducer(loginFormRulesReducer, loginFormRules);
-  var dispatchLoginFormRules = match$4[1];
+  var setAllValid = match[1];
+  var allValid = match[0];
+  var match$1 = React.useReducer(formReducer, initialFormData);
+  var dispatchFormData = match$1[1];
+  var formData = match$1[0];
+  var match$2 = React.useReducer(registerFormRulesReducer, registerFormRules);
+  var dispatchRegisterFormRules = match$2[1];
+  var match$3 = React.useReducer(loginFormRulesReducer, loginFormRules);
+  var dispatchLoginFormRules = match$3[1];
   var formRules;
   switch (formType) {
     case "login" : 
-        formRules = match$4[0];
+        formRules = match$3[0];
         break;
     case "register" : 
-        formRules = match$3[0];
+        formRules = match$2[0];
         break;
     default:
       formRules = /* array */[];
@@ -314,13 +309,10 @@ function useForm(formType, callback) {
   };
   var handleSubmit = function (evt) {
     evt.preventDefault();
-    Curry._1(setAllValid, (function (param) {
-            return Belt_Array.every(formRules, (function (rule) {
-                          return rule[/* valid */3];
-                        }));
-          }));
-    return Curry._1(setIsSubmitting, (function (param) {
-                  return true;
+    return Curry._1(setAllValid, (function (param) {
+                  return Belt_Array.every(formRules, (function (rule) {
+                                return rule[/* valid */3];
+                              }));
                 }));
   };
   React.useEffect((function () {
@@ -328,24 +320,13 @@ function useForm(formType, callback) {
           return undefined;
         }), /* array */[formData]);
   React.useEffect((function () {
-          var match = allValid && isSubmitting;
-          if (match) {
+          if (allValid) {
             Curry._1(callback, /* () */0);
             Curry._1(dispatchFormData, /* ResetState */0);
-            Curry._1(setIsSubmitting, (function (param) {
-                    return false;
-                  }));
-            return undefined;
-          } else {
-            Curry._1(setIsSubmitting, (function (param) {
-                    return false;
-                  }));
             return undefined;
           }
-        }), /* tuple */[
-        allValid,
-        isSubmitting
-      ]);
+          
+        }), /* array */[allValid]);
   return /* tuple */[
           formData,
           formRules,

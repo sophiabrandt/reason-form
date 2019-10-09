@@ -124,7 +124,6 @@ let useForm = (~formType, ~callback) => {
   let valueFromEvent = evt: string => evt->ReactEvent.Form.target##value;
   let nameFromEvent = evt: string => evt->ReactEvent.Form.target##name;
 
-  let (isSubmitting, setIsSubmitting) = React.useState(() => false);
   let (allValid, setAllValid) = React.useState(() => false);
   let (formData, dispatchFormData) =
     React.useReducer(formReducer, initialFormData);
@@ -168,7 +167,6 @@ let useForm = (~formType, ~callback) => {
   let handleSubmit = evt => {
     ReactEvent.Form.preventDefault(evt);
     setAllValid(_ => areAllRulesValid(~formRules));
-    setIsSubmitting(_ => true);
   };
 
   React.useEffect1(
@@ -178,21 +176,16 @@ let useForm = (~formType, ~callback) => {
     },
     [|formData|],
   );
-
-  React.useEffect2(
+  React.useEffect1(
     () =>
-      allValid && isSubmitting ?
+      allValid ?
         {
           callback();
           dispatchFormData(ResetState);
-          setIsSubmitting(_ => false);
           None;
         } :
-        {
-          setIsSubmitting(_ => false);
-          None;
-        },
-    (allValid, isSubmitting),
+        None,
+    [|allValid|],
   );
 
   (formData, formRules, handleChange, handleSubmit);
