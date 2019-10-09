@@ -176,6 +176,7 @@ let useForm = (~formType, ~callback) => {
     },
     [|formData|],
   );
+
   React.useEffect1(
     () =>
       allValid ?
