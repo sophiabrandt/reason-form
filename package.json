@@ -2,13 +2,13 @@
   "name": "reason-form",
   "version": "0.1.0",
   "scripts": {
-    "start": "concurrently -k \"yarn run start:bsb\" \"yarn run start:webpack\"",
+    "start": "concurrently -k \"npm run start:bsb\" \"npm run start:webpack\"",
     "start:bsb": "bsb -clean-world -make-world -w",
     "start:webpack": "webpack-dev-server --port 3000",
-    "build": "concurrently -k \"yarn run build:webpack\"",
+    "build": "npm run build:webpack",
     "build:webpack": "NODE_ENV=production webpack",
     "format": "refmt src/*.re",
-    "deploy": "yarn run build && firebase deploy"
+    "deploy": "npm run build && firebase deploy"
   },
   "keywords": [
     "BuckleScript"

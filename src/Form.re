@@ -6,19 +6,17 @@ module FormErrors = {
     <div>
       <ul>
         {
-          Array.map(
-            rule =>
-              <li
-                key={rule.FormTypes.id |> string_of_int}
-                className={
-                  rule.valid ?
-                    "is-success help is-size-6" : "is-danger help is-size-6"
-                }>
-                <i className={rule.valid ? "fas fa-check" : "fas fa-times"} />
-                {" " |> str}
-                {rule.FormTypes.message |> str}
-              </li>,
-            formRules,
+          Belt.Array.map(formRules, rule =>
+            <li
+              key={rule.id |> string_of_int}
+              className={
+                rule.valid ?
+                  "is-success help is-size-6" : "is-danger help is-size-6"
+              }>
+              <i className={rule.valid ? "fas fa-check" : "fas fa-times"} />
+              {" " |> str}
+              {rule.message |> str}
+            </li>
           )
           |> React.array
         }
