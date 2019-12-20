@@ -96,7 +96,7 @@ npm install yarn -g
 Install [Bucklescript and Reason](https://reasonml.github.io/docs/en/installation):
 
 ```sh
-yarn global add bs-platform
+yarn global add bs-platform@5.2.1 --unsafe-perm
 ```
 
 ### Installation
