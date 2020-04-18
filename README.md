@@ -49,7 +49,11 @@
 
 > Build a form with ReasonReact and React hooks
 
-**☞ [View Demo](https://reason-form.firebaseapp.com)**
+The project demonstrates how to create a form with form validation and custom hooks in ReasonML.
+
+**☞ [View Demo](https://reason-form.firebaseapp.com)**.
+
+Try to submit a form. A successful submit logs to the JavaScript console (there is no back-end logic implemented).
 
 This repository follows my process of learning ReasonReact:
 
@@ -96,7 +100,7 @@ npm install yarn -g
 Install [Bucklescript and Reason](https://reasonml.github.io/docs/en/installation):
 
 ```sh
-yarn global add bs-platform@5.2.1 --unsafe-perm
+npm install -g bs-platform --unsafe-perm # or yarn global add bs-platform --unsafe-perm
 ```
 
 ### Installation
@@ -131,13 +135,13 @@ Otherwise just use the master branch.
 Run the project locally under `http://localhost:3000` via:
 
 ```sh
-yarn run start
+npm run start
 ```
 
 Create a production build:
 
 ```sh
-yarn run build
+npm run build
 ```
 
 <!-- ROADMAP -->
