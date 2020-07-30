@@ -28,7 +28,7 @@ function Form(Props) {
   var formType = Props.formType;
   var logger = function (param) {
     console.log("Form submitted");
-    return /* () */0;
+    
   };
   var match = UseForm$ReactHooksTemplate.useForm(formType, logger);
   var handleChange = match[2];

@@ -4,7 +4,6 @@ import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Caml_chrome_debugger from "bs-platform/lib/es6/caml_chrome_debugger.js";
 
 var initialFormData = {
   username: "",
@@ -102,27 +101,27 @@ function setRuleToInvalid(rules, id) {
 }
 
 function registerFormRulesReducer(state, action) {
-  switch (action.tag | 0) {
+  switch (action.TAG | 0) {
     case /* UsernameLongEnough */0 :
-        if (action[0].length >= 5) {
+        if (action._0.length >= 5) {
           return setRuleToValid(state, 0);
         } else {
           return setRuleToInvalid(state, 0);
         }
     case /* EmailLongEnough */1 :
-        if (action[0].length >= 5) {
+        if (action._0.length >= 5) {
           return setRuleToValid(state, 1);
         } else {
           return setRuleToInvalid(state, 1);
         }
     case /* EmailForRegistrationValid */2 :
-        if (validEmail(action[0])) {
+        if (validEmail(action._0)) {
           return setRuleToValid(state, 2);
         } else {
           return setRuleToInvalid(state, 2);
         }
     case /* PasswordLongEnough */3 :
-        if (action[0].length >= 10) {
+        if (action._0.length >= 10) {
           return setRuleToValid(state, 3);
         } else {
           return setRuleToInvalid(state, 3);
@@ -132,21 +131,21 @@ function registerFormRulesReducer(state, action) {
 }
 
 function loginFormRulesReducer(state, action) {
-  switch (action.tag | 0) {
+  switch (action.TAG | 0) {
     case /* EmailRequired */0 :
-        if (action[0].length !== 0) {
+        if (action._0.length !== 0) {
           return setRuleToValid(state, 0);
         } else {
           return setRuleToInvalid(state, 0);
         }
     case /* EmailForLoginValid */1 :
-        if (validEmail(action[0])) {
+        if (validEmail(action._0)) {
           return setRuleToValid(state, 1);
         } else {
           return setRuleToInvalid(state, 1);
         }
     case /* PasswordRequired */2 :
-        if (action[0].length !== 0) {
+        if (action._0.length !== 0) {
           return setRuleToValid(state, 2);
         } else {
           return setRuleToInvalid(state, 2);
@@ -158,35 +157,34 @@ function loginFormRulesReducer(state, action) {
 function formReducer(state, action) {
   if (typeof action === "number") {
     return initialFormData;
-  } else {
-    switch (action.tag | 0) {
-      case /* SetUsername */0 :
-          return {
-                  username: action[0],
-                  email: state.email,
-                  password: state.password
-                };
-      case /* SetEmail */1 :
-          return {
-                  username: state.username,
-                  email: action[0],
-                  password: state.password
-                };
-      case /* SetPassword */2 :
-          return {
-                  username: state.username,
-                  email: state.email,
-                  password: action[0]
-                };
-      
-    }
+  }
+  switch (action.TAG | 0) {
+    case /* SetUsername */0 :
+        return {
+                username: action._0,
+                email: state.email,
+                password: state.password
+              };
+    case /* SetEmail */1 :
+        return {
+                username: state.username,
+                email: action._0,
+                password: state.password
+              };
+    case /* SetPassword */2 :
+        return {
+                username: state.username,
+                email: state.email,
+                password: action._0
+              };
+    
   }
 }
 
 function useForm(formType, callback) {
-  var match = React.useState((function () {
-          return false;
-        }));
+  var match = React.useState(function () {
+        return false;
+      });
   var setAllValid = match[1];
   var allValid = match[0];
   var match$1 = React.useReducer(formReducer, initialFormData);
@@ -211,16 +209,44 @@ function useForm(formType, callback) {
     var formData$1 = formDataOpt !== undefined ? formDataOpt : formData;
     switch (formType) {
       case "login" :
-          Curry._1(dispatchLoginFormRules, /* EmailRequired */Caml_chrome_debugger.variant("EmailRequired", 0, [formData$1.email]));
-          Curry._1(dispatchLoginFormRules, /* EmailForLoginValid */Caml_chrome_debugger.variant("EmailForLoginValid", 1, [formData$1.email]));
-          return Curry._1(dispatchLoginFormRules, /* PasswordRequired */Caml_chrome_debugger.variant("PasswordRequired", 2, [formData$1.password]));
+          Curry._1(dispatchLoginFormRules, {
+                TAG: 0,
+                _0: formData$1.email,
+                [Symbol.for("name")]: "EmailRequired"
+              });
+          Curry._1(dispatchLoginFormRules, {
+                TAG: 1,
+                _0: formData$1.email,
+                [Symbol.for("name")]: "EmailForLoginValid"
+              });
+          return Curry._1(dispatchLoginFormRules, {
+                      TAG: 2,
+                      _0: formData$1.password,
+                      [Symbol.for("name")]: "PasswordRequired"
+                    });
       case "register" :
-          Curry._1(dispatchRegisterFormRules, /* UsernameLongEnough */Caml_chrome_debugger.variant("UsernameLongEnough", 0, [formData$1.username]));
-          Curry._1(dispatchRegisterFormRules, /* EmailLongEnough */Caml_chrome_debugger.variant("EmailLongEnough", 1, [formData$1.email]));
-          Curry._1(dispatchRegisterFormRules, /* EmailForRegistrationValid */Caml_chrome_debugger.variant("EmailForRegistrationValid", 2, [formData$1.email]));
-          return Curry._1(dispatchRegisterFormRules, /* PasswordLongEnough */Caml_chrome_debugger.variant("PasswordLongEnough", 3, [formData$1.password]));
+          Curry._1(dispatchRegisterFormRules, {
+                TAG: 0,
+                _0: formData$1.username,
+                [Symbol.for("name")]: "UsernameLongEnough"
+              });
+          Curry._1(dispatchRegisterFormRules, {
+                TAG: 1,
+                _0: formData$1.email,
+                [Symbol.for("name")]: "EmailLongEnough"
+              });
+          Curry._1(dispatchRegisterFormRules, {
+                TAG: 2,
+                _0: formData$1.email,
+                [Symbol.for("name")]: "EmailForRegistrationValid"
+              });
+          return Curry._1(dispatchRegisterFormRules, {
+                      TAG: 3,
+                      _0: formData$1.password,
+                      [Symbol.for("name")]: "PasswordLongEnough"
+                    });
       default:
-        return /* () */0;
+        return ;
     }
   };
   var handleChange = function (evt) {
@@ -228,13 +254,25 @@ function useForm(formType, callback) {
     var match = evt.target.name;
     switch (match) {
       case "email" :
-          return Curry._1(dispatchFormData, /* SetEmail */Caml_chrome_debugger.variant("SetEmail", 1, [evt.target.value]));
+          return Curry._1(dispatchFormData, {
+                      TAG: 1,
+                      _0: evt.target.value,
+                      [Symbol.for("name")]: "SetEmail"
+                    });
       case "password" :
-          return Curry._1(dispatchFormData, /* SetPassword */Caml_chrome_debugger.variant("SetPassword", 2, [evt.target.value]));
+          return Curry._1(dispatchFormData, {
+                      TAG: 2,
+                      _0: evt.target.value,
+                      [Symbol.for("name")]: "SetPassword"
+                    });
       case "username" :
-          return Curry._1(dispatchFormData, /* SetUsername */Caml_chrome_debugger.variant("SetUsername", 0, [evt.target.value]));
+          return Curry._1(dispatchFormData, {
+                      TAG: 0,
+                      _0: evt.target.value,
+                      [Symbol.for("name")]: "SetUsername"
+                    });
       default:
-        return /* () */0;
+        return ;
     }
   };
   var handleSubmit = function (evt) {
@@ -246,18 +284,18 @@ function useForm(formType, callback) {
                 }));
   };
   React.useEffect((function () {
-          validate(formData, /* () */0);
-          return ;
+          validate(formData, undefined);
+          
         }), [formData]);
   React.useEffect((function () {
           if (allValid) {
-            Curry._1(callback, /* () */0);
+            Curry._1(callback, undefined);
             Curry._1(dispatchFormData, /* ResetState */0);
             return ;
           }
           
         }), [allValid]);
-  return /* tuple */[
+  return [
           formData,
           formRules,
           handleChange,
