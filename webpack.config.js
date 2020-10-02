@@ -10,6 +10,7 @@ module.exports = {
   output: {
     path: outputDir,
     filename: 'Index.js',
+    publicPath: '/'
   },
   plugins: [
     new HtmlWebpackPlugin({
