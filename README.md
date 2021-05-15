@@ -47,6 +47,11 @@
 
 ## About The Project
 
+**UPDATE**:
+ReasonML + BuckleScript is now [Rescript](https://rescript-lang.org/blog/bucklescript-is-rebranding).
+As the ecosystem has changed around those tools, this repository is **out of date**.
+
+---
 > Build a form with ReasonReact and React hooks
 
 The project demonstrates how to create a form with form validation and custom hooks in ReasonML.
